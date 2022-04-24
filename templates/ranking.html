@@ -18,7 +18,7 @@
                     teamCell.innerHTML = data[team]["team"];
                     beerCell.innerHTML = data[team]["amount"] + " ";
                     for (let i = 0; i < data[team]["amount"]; i++) {
-                        beerCell.innerHTML += "<img class='beerTable' src='{{ url_for('static', filename='svg/beer.svg') }}'>";
+                        beerCell.innerHTML += "🍺";
                     }
                 }
             });
