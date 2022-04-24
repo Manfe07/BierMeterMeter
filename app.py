@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 
+import settings
 import datahandler
 import json
 
@@ -50,4 +51,4 @@ def getRanking():  # put application's code here
     return json.dumps(topList)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=settings.debug, port=settings.port)
