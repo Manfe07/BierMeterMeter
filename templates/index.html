@@ -14,9 +14,9 @@
 </head>
 <body>
     <div id="navbar">
-        <div class="left" href="{{ url_for('ranking') }}">Ranking</div>
-        <div class="left" href="">Info</div>
-        <div class="right" href="{{ url_for('admin') }}">Admin</div>
+        <div class="left"><a href="{{ url_for('ranking') }}">Ranking</a></div>
+        <div class="left"><a href="">Info</a></div>
+        <div class="right"><a href="{{ url_for('admin') }}">Admin</a></div>
     </div>
     {% block content %}{% endblock %}
 
@@ -25,13 +25,6 @@
 <style>#navbar {
   overflow: hidden;
   background-color: #333;
-}
-.left, .right{
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px;
-    text-decoration: none;
 }
 
 .left{
@@ -47,6 +40,11 @@
   }
 }
 #navbar a {
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
 }
 
 /* Page content */
