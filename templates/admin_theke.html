@@ -1,0 +1,70 @@
+{% extends "index.html" %}
+{% block pagetitle %}Admin{% endblock %}
+{% block content %}
+    <div style="padding: 10px">
+        <table class="beerTable">
+            {% for team in topList %}
+                <tr>
+                    <td class="columnTeam">{{ team["team"] }}</td>
+                    <td>
+                        <button class="btn btn-large btn-success"onclick="beer('{{ team["team"] }}', true)">+1</button>
+                        <button class="btn btn-large btn-danger"onclick="beer('{{ team["team"] }}', false)">-1</button>
+                    </td>
+                    <td class="columnBeer">{{ team["amount"] }}🍺</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script>
+        function beer(team, add){
+            if(!add){
+                if (!confirm("⚠ Willst du wirklich von Team " + team + " ein Meter Bier Abziehen? ⚠")) {
+                    return;
+                }
+            }
+
+            data = {
+                "team": team,
+                "add": add,
+                "remomve": !add,
+            };
+
+            fetch("{{url_for('api_beer')}}", {
+              method: "POST",
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(data)
+            }).then(res => {
+              alert("Ein Meter Bier🍺 wurde dem Team " + team + "hinzugefügt")
+              console.log("Request complete! response:", res);
+              location.reload()
+            });
+
+        }
+    </script>
+{% endblock %}{% block style %}
+<style>
+    .beerTable{
+        vertical-align: bottom;
+        max-height: 25px;
+    }
+    .columnTeam{
+        text-align: right;
+        vertical-align: bottom;
+        width:0.1%;
+        white-space: nowrap;
+        padding: 5px;
+    }
+    .columnBeer{
+        text-align: left;
+        vertical-align: bottom;
+        #width: max-content;
+        padding: 5px;
+    }
+    tr:nth-child(odd) {
+        background-color: #b0ceff;
+    }
+    tr:nth-child(even) {
+        background-color: #d9e7ff;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "index.html" %}
+{% block pagetitle %}Ranking🏆{% endblock %}
+{% block content %}
+    <table id="rankingTable"></table>
+
+    <script>
+        function updateTable(tableID) {
+            let tableRef = document.getElementById(tableID);
+            tableRef.innerHTML = "";
+
+            $.getJSON('{{ url_for("getRanking") }}', function(data) {
+                for(team in data){
+                    let newRow = tableRef.insertRow(-1);
+                    let teamCell = newRow.insertCell(0);
+                    let beerCell = newRow.insertCell(1);
+                    teamCell.setAttribute('class', 'columnTeam')
+                    beerCell.setAttribute('class', 'columnBeer')
+                    teamCell.innerHTML = data[team]["team"];
+                    beerCell.innerHTML = data[team]["amount"] + " ";
+                    for (let i = 0; i < data[team]["amount"]; i++) {
+                        beerCell.innerHTML += "<img class='beerTable' src='{{ url_for('static', filename='svg/beer.svg') }}'>";
+                    }
+                }
+            });
+        }
+
+        // Call addRow() with the table's ID
+        updateTable("rankingTable")
+        setInterval(updateTable, 60000, 'rankingTable')
+    </script>
+{% endblock %}
+{% block style %}
+<style>
+    .beerTable{
+        vertical-align: bottom;
+        max-height: 25px;
+    }
+    .columnTeam{
+        text-align: right;
+        vertical-align: bottom;
+        width:0.1%;
+        white-space: nowrap;
+        padding: 5px;
+    }
+    .columnBeer{
+        text-align: left;
+        vertical-align: bottom;
+        width: max-content;
+        padding: 5px;
+    }
+    tr:nth-child(odd) {
+        background-color: #b0ceff;
+    }
+    tr:nth-child(even) {
+        background-color: #d9e7ff;
+    }
+</style>
+{% endblock %}
