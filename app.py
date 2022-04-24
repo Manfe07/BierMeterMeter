@@ -11,6 +11,12 @@ datahandler.init()
 def ranking():  # put application's code here
     return render_template('ranking.html')
 
+@app.route('/infos')
+def infos():  # put application's code here
+    infos = datahandler.get_Infos()
+    print(infos)
+    return render_template('infos.html', infos = infos)
+
 @app.route('/admin/')
 def admin():
     return render_template('admin.html')

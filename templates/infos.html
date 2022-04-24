@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block pagetitle %}Infos{% endblock %}
+{% block content %}
+    {% for data in infos %}
+        <div style="padding: 10px;">
+            <div style="padding: 10px; background-color: beige; border-radius: 10px">
+                <h2>{{ data["title"] }}</h2>
+                <a style="font-size: small">{{ data["Timestamp"] }}</a><br>
+                <p>{{ data["content"] }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+{% block style %}
+{% endblock %}

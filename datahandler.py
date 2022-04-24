@@ -21,6 +21,15 @@ def init():
             );
         ''')
 
+        cur.execute('''
+                    CREATE TABLE IF NOT EXISTS infos (
+                        id INTEGER PRIMARY KEY,
+                        titel char NOT NULL,
+                        content TEXT NOT NULL,
+                        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    );
+                ''')
+
         con.commit()
         con.close()
 
@@ -68,6 +77,24 @@ def get_Teams():
 
         con.close()
         return list
+
+def get_Infos():
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        list = []
+        result = cur.execute('SELECT * FROM infos ORDER BY timestamp desc')
+        for row in result:
+                list.append({
+                        "title": row[1],
+                        "content": row[2],
+                        "Timestamp": row[3]
+                })
+
+        con.close()
+        return list
+
+
 
 if __name__ == "__main__":
         beer("Team 3", True)
