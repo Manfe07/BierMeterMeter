@@ -17,7 +17,7 @@
     <script>
         function beer(team, add){
             if(!add){
-                if (!confirm("⚠ Willst du wirklich von Team " + team + " ein Meter Bier Abziehen? ⚠")) {
+                if (!confirm("⚠ Willst du wirklich von Team \"" + team + "\" ein Meter Bier Abziehen? ⚠")) {
                     return;
                 }
             }
@@ -33,7 +33,9 @@
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify(data)
             }).then(res => {
-              alert("Ein Meter Bier🍺 wurde dem Team " + team + "hinzugefügt")
+                if(add){
+                    alert("Ein Meter Bier🍺 wurde dem Team \"" + team + "\" hinzugefügt")
+                }
               console.log("Request complete! response:", res);
               location.reload()
             });
