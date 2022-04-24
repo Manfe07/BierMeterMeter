@@ -3,7 +3,7 @@
 {% block content %}
     {% for data in infos %}
         <div style="padding: 10px;">
-            <div style="padding: 10px; background-color: beige; border-radius: 10px">
+            <div style="padding: 10px; background-color: beige; border: solid 1px; border-radius: 10px;">
                 <h2>{{ data["title"] }}</h2>
                 <a style="font-size: small">{{ data["Timestamp"] }}</a><br>
                 <p>{{ data["content"] }}</p>
