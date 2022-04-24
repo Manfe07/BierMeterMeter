@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}BMM🍻{% endblock %} - {% block pagetitle %}{% endblock %}</title>
+    <title>{% block title %}BierMeter{% endblock %} - {% block pagetitle %}{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='svg/beer.svg') }}" type="image/svg+xml">
 
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
@@ -14,9 +14,9 @@
 </head>
 <body>
     <div id="navbar">
-        <a href="{{ url_for('ranking') }}">Ranking</a>
-        <a href="">Info</a>
-        <a href="{{ url_for('admin') }}" style="float: right">Admin</a>
+        <div class="left" href="{{ url_for('ranking') }}">Ranking</div>
+        <div class="left" href="">Info</div>
+        <div class="right" href="{{ url_for('admin') }}">Admin</div>
     </div>
     {% block content %}{% endblock %}
 
@@ -26,15 +26,27 @@
   overflow: hidden;
   background-color: #333;
 }
+.left, .right{
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
 
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
 /* Navbar links */
+@media screen and (max-width: 800px) {
+  .left, .right {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+}
 #navbar a {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px;
-  text-decoration: none;
 }
 
 /* Page content */
@@ -42,15 +54,5 @@
   padding: 16px;
 }
 
-/* The sticky class is added to the navbar with JS when it reaches its scroll position */
-.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-/* Add some top padding to the page content to prevent sudden quick movement (as the navigation bar gets a new position at the top of the page (position:fixed and top:0) */
-.sticky + .content {
-  padding-top: 60px;
-}</style>
+</style>
 </html>
