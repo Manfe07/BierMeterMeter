@@ -13,6 +13,14 @@ def init():
                 Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         ''')
+
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS teams (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL
+            );
+        ''')
+
         con.commit()
         con.close()
 
@@ -46,8 +54,20 @@ def get_List(ranking = False):
                              "team": row[0],
                              "amount" : row[1]
                              })
-        return list
         con.close()
+        return list
+
+def get_Teams():
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        list = []
+        result = cur.execute('SELECT name FROM teams ORDER BY name ASC')
+        for row in result:
+                list.append(row[0])
+
+        con.close()
+        return list
 
 if __name__ == "__main__":
-        add_Beer("Team 3")
+        beer("Team 3", True)

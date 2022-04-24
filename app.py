@@ -4,6 +4,7 @@ import datahandler
 import json
 
 app = Flask(__name__)
+datahandler.init()
 
 @app.route('/')
 def ranking():  # put application's code here
@@ -16,7 +17,8 @@ def admin():
 @app.route('/admin/theke')
 def adminTheke():
     topList = datahandler.get_List()
-    return render_template('admin_theke.html', topList = topList)
+    teams = datahandler.get_Teams()
+    return render_template('admin_theke.html', topList = topList, teams = teams)
 
 @app.route('/api/beer', methods=['POST'])
 def api_beer():
@@ -34,6 +36,7 @@ def api_beer():
 
     if 'team' in request_data:
         team = request_data["team"]
+        print(team)
         datahandler.beer(team, add)
 
     print(request_data)

@@ -3,14 +3,13 @@
 {% block content %}
     <div style="padding: 10px">
         <table class="beerTable">
-            {% for team in topList %}
+            {% for team in teams %}
                 <tr>
-                    <td class="columnTeam">{{ team["team"] }}</td>
+                    <td class="columnTeam">{{ team }}</td>
                     <td>
-                        <button class="btn btn-large btn-success"onclick="beer('{{ team["team"] }}', true)">+1</button>
-                        <button class="btn btn-large btn-danger"onclick="beer('{{ team["team"] }}', false)">-1</button>
+                        <button class="btn btn-large btn-success"onclick="beer('{{ team }}', true)">+1</button>
+                        <button class="btn btn-large btn-danger"onclick="beer('{{ team }}', false)">-1</button>
                     </td>
-                    <td class="columnBeer">{{ team["amount"] }}🍺</td>
                 </tr>
             {% endfor %}
         </table>
@@ -48,7 +47,7 @@
         max-height: 25px;
     }
     .columnTeam{
-        text-align: right;
+        text-align: left;
         vertical-align: bottom;
         width:0.1%;
         white-space: nowrap;
