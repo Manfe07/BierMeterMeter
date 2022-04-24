@@ -14,7 +14,6 @@ def ranking():  # put application's code here
 @app.route('/infos')
 def infos():  # put application's code here
     infos = datahandler.get_Infos()
-    print(infos)
     return render_template('infos.html', infos = infos)
 
 @app.route('/admin/')
@@ -43,10 +42,7 @@ def api_beer():
 
     if 'team' in request_data:
         team = request_data["team"]
-        print(team)
         datahandler.beer(team, add)
-
-    print(request_data)
 
     return render_template('index.html')
 
