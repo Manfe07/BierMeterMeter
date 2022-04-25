@@ -105,6 +105,15 @@ def add_Info(title : str, content : str):
         con.commit()
         con.close()
 
+def delete_Info(id):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        cur.execute("DELETE FROM infos WHERE id=?", (id,))
+
+        con.commit()
+        con.close()
+
 
 
 

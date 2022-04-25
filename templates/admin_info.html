@@ -25,10 +25,29 @@
                 <h2>{{ data["title"] }}</h2>
                 <a style="font-size: small; color: gray">{{ data["Timestamp"] }}</a><br>
                 <p>{{ data["content"] }}</p>
+                <button class="btn btn-large btn-danger"onclick="deletePost({{ data["id"] }}, '{{ data["title"] }}')">Löschen</button>
             </div>
         </div>
     {% endfor %}
 
+<script>
+    function deletePost(id, title){
+        if (confirm("⚠ Willst du den Post \"" + title + "\" wirklich löschen? ⚠")) {
+            fetch("{{url_for('api_deleteInfo')}}", {
+              method: "POST",
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({'id': id})
+            }).then(res => {
+              console.log("Request complete! response:", res);
+              location.reload()
+            });
+            return;
+        }
+        else{
+            return;
+        }
+    }
+</script>
 {% endblock %}
 {% block style %}
 {% endblock %}

@@ -42,6 +42,16 @@ def api_addInfo():
 
     return redirect(url_for('infos'))
 
+@app.route('/api/deleteInfo', methods=['POST'])
+def api_deleteInfo():
+    request_data = request.get_json()
+
+    if 'id' in request_data:
+        id = request_data["id"]
+        datahandler.delete_Info(id)
+
+    return redirect(url_for('infos'))
+
 @app.route('/api/beer', methods=['POST'])
 def api_beer():
     request_data = request.get_json()
