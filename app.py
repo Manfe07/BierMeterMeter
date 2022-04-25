@@ -11,6 +11,10 @@ datahandler.init()
 def ranking():  # put application's code here
     return render_template('ranking.html')
 
+@app.route('/tv')
+def ranking_TV():  # put application's code here
+    return render_template('ranking_tv.html')
+
 @app.route('/infos')
 def infos():  # put application's code here
     infos = datahandler.get_Infos()

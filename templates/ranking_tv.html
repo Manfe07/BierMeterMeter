@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BierMeter{% endblock %} - {% block pagetitle %}{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='svg/beer.svg') }}" type="image/svg+xml">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+ <table id="rankingTable"></table>
+
+    <script>
+        function updateTable(tableID) {
+            let tableRef = document.getElementById(tableID);
+            tableRef.innerHTML = "";
+
+            $.getJSON('{{ url_for("getRanking") }}', function(data) {
+                for(team in data){
+                    let newRow = tableRef.insertRow(-1);
+                    let teamCell = newRow.insertCell(0);
+                    let beerCell = newRow.insertCell(1);
+                    teamCell.setAttribute('class', 'columnTeam')
+                    beerCell.setAttribute('class', 'columnBeer')
+                    teamCell.innerHTML = data[team]["team"];
+                    beerCell.innerHTML = data[team]["amount"] + " ";
+                    for (let i = 0; i < data[team]["amount"]; i++) {
+                        beerCell.innerHTML += "🍺";
+                    }
+                }
+            });
+        }
+
+        // Call addRow() with the table's ID
+        updateTable("rankingTable")
+        setInterval(updateTable, 60000, 'rankingTable')
+    </script>
+</body>
+<style>
+
+    .beerTable{
+        vertical-align: bottom;
+        max-height: 25px;
+    }
+    .columnTeam{
+        text-align: right;
+        vertical-align: bottom;
+        width:0.1%;
+        white-space: nowrap;
+        padding: 5px;
+    }
+    .columnBeer{
+        text-align: left;
+        vertical-align: bottom;
+        width: max-content;
+        padding: 5px;
+    }
+    tr:nth-child(odd) {
+        background-color: #b0ceff;
+    }
+    tr:nth-child(even) {
+        background-color: #d9e7ff;
+    }
+    #navbar {
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    .left{
+        float: left;
+    }
+    .right{
+        float: right;
+    }
+    @media screen and (max-width: 500px) {
+      .left, .right {
+        width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+      }
+    }
+#navbar a {
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+/* Page content */
+.content {
+  padding: 16px;
+}
+
+</style>
+</html>
