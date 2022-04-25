@@ -86,6 +86,7 @@ def get_Infos():
         result = cur.execute('SELECT * FROM infos ORDER BY timestamp desc')
         for row in result:
                 list.append({
+                        "id": row[0],
                         "title": row[1],
                         "content": row[2],
                         "Timestamp": row[3]
@@ -93,6 +94,17 @@ def get_Infos():
 
         con.close()
         return list
+
+
+def add_Info(title : str, content : str):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        cur.execute("INSERT INTO infos(title, content) VALUES (?,?)", (title,content))
+
+        con.commit()
+        con.close()
+
 
 
 

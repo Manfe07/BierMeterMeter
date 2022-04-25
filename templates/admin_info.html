@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block pagetitle %}Admin Infos{% endblock %}
+{% block content %}
+    <form action="{{ url_for('api_addInfo') }}" method="POST">
+        <div style="padding: 10px;">
+            <div style="padding: 10px; background-color: beige; border: solid 1px; border-radius: 10px;">
+                <div>
+                    <label for="title">Titel:</label><br>
+                    <input name="title" id="title" value="">
+                </div>
+                <div>
+                    <label for="content">Inhalt</label><br>
+                    <textarea name="content" id="content" value="" style="min-width: 50%"></textarea>
+                </div>
+                <div>
+                    <button>Post erstellen</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% for data in infos %}
+        <div style="padding: 10px;">
+            <div style="padding: 10px; background-color: beige; border: solid 1px; border-radius: 10px;">
+                <h2>{{ data["title"] }}</h2>
+                <a style="font-size: small; color: gray">{{ data["Timestamp"] }}</a><br>
+                <p>{{ data["content"] }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+{% block style %}
+{% endblock %}

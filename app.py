@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 
 import settings
 import datahandler
@@ -25,6 +25,22 @@ def adminTheke():
     topList = datahandler.get_List()
     teams = datahandler.get_Teams()
     return render_template('admin_theke.html', topList = topList, teams = teams)
+
+@app.route('/admin/infos')
+def adminInfos():
+    infos = datahandler.get_Infos()
+    return render_template('admin_info.html', infos = infos)
+
+@app.route('/api/addInfo', methods=['POST'])
+def api_addInfo():
+    title = request.form.get("title")
+    content = request.form.get("content")
+    if (title and content):
+        datahandler.add_Info(title, content)
+    print(title)
+    print(content)
+
+    return redirect(url_for('infos'))
 
 @app.route('/api/beer', methods=['POST'])
 def api_beer():
