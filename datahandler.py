@@ -1,6 +1,7 @@
 import sqlite3
+import settings
 
-db_file = 'bmm.db'
+db_file = settings.db_file
 
 def init():
         con = sqlite3.connect(db_file)
