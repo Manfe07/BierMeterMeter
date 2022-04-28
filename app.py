@@ -76,14 +76,27 @@ def admin():
 
 @app.route('/admin/theke')
 def adminTheke():
-    topList = datahandler.get_List()
-    teams = datahandler.get_Teams()
-    return render_template('admin_theke.html', topList = topList, teams = teams)
+    if session.get("logged_in"):
+        topList = datahandler.get_List()
+        teams = datahandler.get_Teams()
+        return render_template('admin_theke.html', topList = topList, teams = teams)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/admin/infos')
 def adminInfos():
-    infos = datahandler.get_Infos()
-    return render_template('admin_info.html', infos = infos)
+    if session.get("logged_in"):
+        infos = datahandler.get_Infos()
+        return render_template('admin_info.html', infos = infos)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/admin/teams')
+def adminTeams():
+    if session.get("logged_in"):
+        return render_template('admin_teams.html')
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/api/addInfo', methods=['POST'])
 def api_addInfo():

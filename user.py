@@ -40,7 +40,7 @@ def add_User(username, password, email = None):
                         cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hash))
                 con.commit()
                 con.close()
-                return 0
+                return 1
         else:
                 return -1       #-1 == User exists
 
