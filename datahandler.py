@@ -7,6 +7,7 @@ def init():
         con = sqlite3.connect(db_file)
         cur = con.cursor()
 
+        #Create Table "biermeter"
         cur.execute('''
             CREATE TABLE IF NOT EXISTS biermeter (
                 id INTEGER PRIMARY KEY,
@@ -15,6 +16,7 @@ def init():
             );
         ''')
 
+        #Create Table "teams"
         cur.execute('''
             CREATE TABLE IF NOT EXISTS teams (
                 id INTEGER PRIMARY KEY,
@@ -22,6 +24,7 @@ def init():
             );
         ''')
 
+        #Create Table "infos"
         cur.execute('''
                     CREATE TABLE IF NOT EXISTS infos (
                         id INTEGER PRIMARY KEY,
@@ -79,6 +82,7 @@ def get_Teams():
         con.close()
         return list
 
+
 def get_Infos():
         con = sqlite3.connect(db_file)
         cur = con.cursor()
@@ -117,6 +121,5 @@ def delete_Info(id):
 
 
 
-
 if __name__ == "__main__":
-        beer("Team 3", True)
+        init()

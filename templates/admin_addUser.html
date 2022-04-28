@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block pagetitle %}Admin - Login{% endblock %}
+{% block content %}
+    <div style="padding: 10px">
+    <form action="{{ url_for('add_user') }}" method="POST">
+      <div class="login-screen">
+        <div class="app-title">
+          <h1>Login</h1>
+        </div>
+        <div class="control-group">
+            <input type="text" class="login-field" value="" placeholder="username" name="username">
+        </div>
+        <div class="control-group">
+            <input type="password" class="login-field" value="" placeholder="password" name="password">
+        </div>
+        <div class="control-group">
+            <input type="email" class="login-field" value="" placeholder="email" name="email">
+        </div><br>
+         <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block">
+       </div>
+    </form>
+    </div>
+{% endblock %}
+{% block style %}
+{% endblock %}

@@ -1,11 +1,15 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+import os
+
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 
 import settings
 import datahandler
+import user
 import json
 
 app = Flask(__name__)
 datahandler.init()
+user.init()
 
 @app.route('/')
 def ranking():  # put application's code here
@@ -20,9 +24,55 @@ def infos():  # put application's code here
     infos = datahandler.get_Infos()
     return render_template('infos.html', infos = infos)
 
-@app.route('/admin/')
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        login = request.form
+
+        userName = login['username']
+        password = login['password']
+
+        if user.verify(userName,password):
+          session['logged_in'] = True
+        else:
+          session['logged_in'] = False
+          flash('wrong password!')
+        return redirect(url_for('admin'))
+    else:
+        return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+  session['logged_in'] = False
+  return redirect(url_for('ranking'))
+
+
+@app.route('/admin/addUser', methods=['POST','GET'])
+def add_user():
+    if session.get("logged_in"):
+        if request.method == 'POST':
+            login = request.form
+
+            userName = login['username']
+            password = login['password']
+            email = login['email']
+            if user.add_User(userName,password,email):
+                return redirect(url_for('admin'))
+            else:
+                flash("Error creating User " + userName)
+                return redirect(url_for('add_user'))
+        elif request.method == 'GET':
+            return render_template('admin_addUser.html')
+    else:
+        return redirect(url_for('ranking'))
+
+
+@app.route('/admin')
 def admin():
-    return render_template('admin.html')
+    if session.get("logged_in"):
+        return render_template('admin.html')
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/admin/theke')
 def adminTheke():
@@ -83,4 +133,5 @@ def getRanking():  # put application's code here
     return json.dumps(topList)
 
 if __name__ == '__main__':
+    app.secret_key = settings.secret_key
     app.run(debug=settings.debug, port=settings.port)
