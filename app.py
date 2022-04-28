@@ -77,9 +77,8 @@ def admin():
 @app.route('/admin/theke')
 def adminTheke():
     if session.get("logged_in"):
-        topList = datahandler.get_List()
         teams = datahandler.get_Teams()
-        return render_template('admin_theke.html', topList = topList, teams = teams)
+        return render_template('admin_theke.html', teams = teams)
     else:
         return redirect(url_for('login'))
 
