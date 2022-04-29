@@ -94,9 +94,11 @@ def adminInfos():
 @app.route('/admin/teams')
 def adminTeams():
     if session.get("logged_in"):
-        return render_template('admin_teams.html')
+        teams = datahandler.get_Teams()
+        return render_template('admin_teams.html', teams = teams)
     else:
         return redirect(url_for('login'))
+
 
 @app.route('/api/addInfo', methods=['POST'])
 def api_addInfo():
@@ -119,9 +121,36 @@ def api_deleteInfo():
             id = request_data["id"]
             datahandler.delete_Info(id)
 
-        return redirect(url_for('infos'))
+        return redirect(url_for('adminInfos'))
     else:
         return redirect(url_for('login'))
+
+@app.route('/api/deleteTeam', methods=['POST'])
+def api_deleteTeam():
+    if session.get("logged_in"):
+        request_data = request.get_json()
+        if 'id' in request_data:
+            id = request_data["id"]
+            datahandler.delete_Team(id)
+
+        return redirect(url_for('adminTeams'))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/api/addTeam', methods=['POST'])
+def api_addTeam():
+    if session.get("logged_in"):
+        if request.method == 'POST':
+            form = request.form
+            name = form["name"]
+            contactPerson = form["contactPerson"]
+            email = form["email"]
+            datahandler.add_Team(name, contactPerson=contactPerson, email=email)
+
+            return redirect(url_for('adminTeams'))
+        else:
+            return redirect(url_for('login'))
 
 
 @app.route('/api/beer', methods=['POST'])

@@ -20,7 +20,9 @@ def init():
         cur.execute('''
             CREATE TABLE IF NOT EXISTS teams (
                 id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL
+                name VARCHAR(100) UNIQUE NOT NULL,
+                contactPerson VARCHAR(300),
+                email VARCHAR(300)
             );
         ''')
 
@@ -75,12 +77,41 @@ def get_Teams():
         cur = con.cursor()
 
         list = []
-        result = cur.execute('SELECT name FROM teams ORDER BY name ASC')
+        result = cur.execute('SELECT * FROM teams ORDER BY name ASC')
         for row in result:
-                list.append(row[0])
+                list.append({
+                        "id":row[0],
+                        "name":row[1],
+                        "contactPerson":row[2],
+                        "email":row[3],
+                })
 
         con.close()
         return list
+
+
+def add_Team(name, contactPerson=None, email=None):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+        try:
+                cur.execute("INSERT INTO teams(name, contactPerson, email) VALUES (?,?,?)", (name, contactPerson, email))
+        except Exception as e:
+                print(e)
+        con.commit()
+        con.close()
+
+
+
+def delete_Team(id):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+        team = cur.execute("SELECT name FROM teams WHERE id=?", (id,)).fetchone()[0]
+        cur.execute("DELETE FROM biermeter WHERE team=?", (team,))
+        cur.execute("DELETE FROM teams WHERE id=?", (id,))
+
+        con.commit()
+        con.close()
+
 
 
 def get_Infos():

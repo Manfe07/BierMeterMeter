@@ -2,8 +2,67 @@
 {% block pagetitle %}Admin{% endblock %}
 {% block content %}
     <div style="padding: 10px">
-       <a>Diese seite wird momentan noch gebaut 🚧👷‍♂️😉</a>
+        <form action="{{ url_for('api_addTeam') }}" method="POST">
+            <div class="contentDiv">
+                <div class="app-title">
+                    <h1>Team erstellen</h1>
+                </div>
+                <div class="control-group">
+                    <input type="text" class="login-field" value="" placeholder="Team Name" name="name">
+                </div>
+                <div class="control-group">
+                    <input type="text" class="login-field" value="" placeholder="Ansprechperson" name="contactPerson">
+                </div>
+                <div class="control-group">
+                    <input type="email" class="login-field" value="" placeholder="email" name="email">
+                </div><br>
+                    <input type="submit" value="Erstellen" class="btn btn-primary btn-large btn-block">
+            </div>
+        </form>
     </div>
+    <div style="padding: 10px">
+            {% for team in teams %}
+                <div class="contentDiv">
+                    <h2>{{ team['name'] }}</h2>
+                    <table>
+                        <tr>
+                            <td style="text-align: right">Ansprechpartner:&nbsp;</td>
+                            {% if team['contactPerson'] %}
+                                <td>{{ team['contactPerson'] }}</td>
+                            {% else %}
+                                <td>nicht angegeben</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td style="text-align: right">eMail:&nbsp;</td>
+                            {% if team['email'] %}
+                                <td><a href="mailto:{{ team['email'] }}">{{ team['email'] }}</a></td>
+                            {% else %}
+                                <td>nicht angegeben </td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                    <br>
+                    <button class="btn btn-danger btn-block" onclick="deleteTeam({{ team['id'] }}, '{{ team['name'] }}')">Löschen</button>
+                </div>
+                <br>
+            {% endfor %}
+    </div>
+    <script>
+        function deleteTeam(id, team){
+            if (confirm("⚠🚨 Willst du wirklich das Team \"" + team + "\" Löschen? 🚨⚠")) {
+                fetch("{{url_for('api_deleteTeam')}}", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({'id':id})
+                }).then(res => {
+                    alert("Team \"" + team + "\" wurde gelöscht")
+                    console.log("Request complete! response:", res);
+                    location.reload()
+                });
+            }
+        }
+    </script>
 {% endblock %}
 {% block style %}
 {% endblock %}
