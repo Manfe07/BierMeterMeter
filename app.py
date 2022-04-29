@@ -11,6 +11,7 @@ app = Flask(__name__)
 datahandler.init()
 user.init()
 
+
 @app.route('/')
 def ranking():  # put application's code here
     return render_template('ranking.html')
@@ -99,50 +100,61 @@ def adminTeams():
 
 @app.route('/api/addInfo', methods=['POST'])
 def api_addInfo():
-    title = request.form.get("title")
-    content = request.form.get("content")
-    if (title and content):
-        datahandler.add_Info(title, content)
-    print(title)
-    print(content)
+    if session.get("logged_in"):
+        title = request.form.get("title")
+        content = request.form.get("content")
+        if (title and content):
+            datahandler.add_Info(title, content)
+        return redirect(url_for('adminInfos'))
 
-    return redirect(url_for('infos'))
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/api/deleteInfo', methods=['POST'])
 def api_deleteInfo():
-    request_data = request.get_json()
+    if session.get("logged_in"):
+        request_data = request.get_json()
+        if 'id' in request_data:
+            id = request_data["id"]
+            datahandler.delete_Info(id)
 
-    if 'id' in request_data:
-        id = request_data["id"]
-        datahandler.delete_Info(id)
+        return redirect(url_for('infos'))
+    else:
+        return redirect(url_for('login'))
 
-    return redirect(url_for('infos'))
 
 @app.route('/api/beer', methods=['POST'])
 def api_beer():
-    request_data = request.get_json()
+    if session.get("logged_in"):
+        request_data = request.get_json()
 
-    team = None
-    add = False
-    remove = False
+        team = None
+        add = False
+        remove = False
 
-    if 'add' in request_data:
-        add = request_data["add"]
+        if 'add' in request_data:
+            add = request_data["add"]
 
-    if 'remove' in request_data:
-        remove = request_data["remove"]
+        if 'remove' in request_data:
+            remove = request_data["remove"]
 
-    if 'team' in request_data:
-        team = request_data["team"]
-        datahandler.beer(team, add)
+        if 'team' in request_data:
+            team = request_data["team"]
+            datahandler.beer(team, add)
+        return render_template('admin_theke.html')
 
-    return render_template('index.html')
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/api/getRanking')
 def getRanking():  # put application's code here
     topList =datahandler.get_List(True)
     return json.dumps(topList)
+
+
+
 
 if __name__ == '__main__':
     app.secret_key = settings.secret_key
