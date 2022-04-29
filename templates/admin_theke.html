@@ -5,10 +5,10 @@
         <table class="beerTable">
             {% for team in teams %}
                 <tr>
-                    <td class="columnTeam">{{ team }}</td>
+                    <td class="columnTeam">{{ team['name'] }}</td>
                     <td>
-                        <button class="btn btn-large btn-success"onclick="beer('{{ team }}', true)">+1</button>
-                        <button class="btn btn-large btn-danger"onclick="beer('{{ team }}', false)">-1</button>
+                        <button class="btn btn-large btn-success"onclick="beer('{{ team['name'] }}', true)">+1</button>
+                        <button class="btn btn-large btn-danger"onclick="beer('{{ team['name'] }}', false)">-1</button>
                     </td>
                 </tr>
             {% endfor %}

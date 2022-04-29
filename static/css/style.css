@@ -3,6 +3,13 @@ body {
     font-size: larger;
 }
 
+.contentDiv {
+    padding: 10px;
+    background-color: beige;
+    border: solid 1px;
+    border-radius: 10px;
+}
+
 footer {
     background-color: grey;
     position: absolute;

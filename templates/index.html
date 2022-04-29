@@ -16,15 +16,17 @@
     <div id="navbar">
         <div class="left"><a href="{{ url_for('ranking') }}">Ranking</a></div>
         <div class="left"><a href="{{ url_for('infos') }}">Infos</a></div>
-       <!-- <div class="right"><a href="{{ url_for('admin') }}">Admin</a></div> -->
+        <div class="right"><a href="{{ url_for('admin') }}">Admin</a></div>
     </div>
     {% block content %}{% endblock %}
 
+    <!--
     <footer>
         <center>
             <div style="color: lightgray">Hier geht es zur <a href="{{ url_for('admin') }}" style="color: white;text-decoration:none;">Admin</a> Seite</div>
         </center>
     </footer>
+    -->
 </body>
 {% block style %}{% endblock %}
 <style>#navbar {
