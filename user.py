@@ -30,7 +30,7 @@ def check_User(username):
                 return False
 
 
-def add_User(username, password, email = None):
+def add_User(username, password, permission, email = None):
         con = sqlite3.connect(db_file)
         cur = con.cursor()
         hash = sha256_crypt.hash(password)

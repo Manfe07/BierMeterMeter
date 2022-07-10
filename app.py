@@ -48,7 +48,6 @@ def login():
             session['permission'] = 0
             session['user_name'] = None
             flash('wrong password!')
-        print(session)
         return redirect(url_for('admin'))
     else:
         return render_template('login.html')
@@ -70,7 +69,8 @@ def add_user():
             userName = login['username']
             password = login['password']
             email = login['email']
-            if user.add_User(userName,password,email):
+            permission = login['permission']
+            if user.add_User(userName,password,permission,email):
                 return redirect(url_for('admin'))
             else:
                 flash("Error creating User " + userName)
