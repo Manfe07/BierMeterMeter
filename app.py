@@ -6,11 +6,17 @@ import settings
 import datahandler
 import user
 import json
+import logging
+
 
 app = Flask(__name__)
 datahandler.init()
 user.init()
 
+#logging.basicConfig(filename='flask.log', level=logging.DEBUG)
+logging.basicConfig(filename='flask.log',
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 @app.route('/')
 def ranking():  # put application's code here
@@ -187,4 +193,4 @@ def getRanking():  # put application's code here
 
 if __name__ == '__main__':
     app.secret_key = settings.secret_key
-    app.run(debug=settings.debug, port=settings.port)
+    app.run(debug=settings.debug, port=settings.port, host="0.0.0.0")
