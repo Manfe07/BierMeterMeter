@@ -100,6 +100,50 @@ def adminTheke():
     else:
         return redirect(url_for('login'))
 
+@app.route('/kasse_teams', methods=['GET', 'POST'])
+def admin_cashRegister_teams():
+    if session.get("logged_in") and session.get("permission") >= 1:
+        teams = datahandler.get_Teams()
+        return render_template('admin_cashRegister_teams.html', teams = teams)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/kasse_items', methods=['GET', 'POST'])
+def admin_cashRegister_items():
+    if session.get("logged_in") and session.get("permission") >= 1:
+        if(request.args.get('team_id')):
+            team = {
+                'team_name' : request.args.get('team_name'),
+                'team_id' : request.args.get('team_id')
+            }
+        else:
+            team = {
+                'team_name' : "Ohne Mannschaft",
+                'team_id' : None
+            }
+        print(team)
+        items = datahandler.get_Items()
+        return render_template('admin_cashRegister_items.html', team=team, items=items)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/kasse_checkout', methods=['GET', 'POST'])
+def admin_cashRegister_checkout():
+    if session.get("logged_in") and session.get("permission") >= 1:
+        request_data = request.get_json()
+        if 'basket' in request_data:
+            _data = {
+                'basket' : request_data["basket"],
+                'team_id' : request_data["team_id"],
+                'cash' : request_data["cash"],
+                'user' : session.get("user_name")
+            }
+            datahandler.checkout(_data)
+
+        return redirect(url_for('admin_cashRegister_teams'))
+    else:
+        return redirect(url_for('login'))
+
 @app.route('/admin/infos')
 def adminInfos():
     if session.get("logged_in") and session.get("permission") >= 2:

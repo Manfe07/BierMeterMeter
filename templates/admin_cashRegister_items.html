@@ -1,0 +1,119 @@
+{% extends "index.html" %}
+{% block pagetitle %}Admin{% endblock %}
+{% block content %}
+    <div style="padding: 10px">
+        <h2>{{ team.team_name }}</h2>
+    </div>
+    <div class="itemblock">
+        {% for item in items %}
+            <div class="item" style="margin: 20px">
+                <button class="btn btn-large btn-primary btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)">{{ item.name }} +1</button>
+                <button class="btn btn-large btn-warning btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 5)">{{ item.name }} +5</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin: 20px">
+        <table id="bill" style="border: black solid; table-layout: auto;"></table>
+    </div>
+
+    <div style="margin: 20px; visibility: hidden" id="check-out">
+        <button type="button" class="btn btn-danger" onclick="submitBill(false)">Team-Konto<br>{{ team.team_name }}</button>
+        <button type="button" class="btn btn-warning" onclick="submitBill(true)">Bar<br>EC</button>
+    </div>
+    <script>
+        let basket = {};
+        function addItem(name, price, amount){
+            if (name in basket){
+                buffer = basket[name];
+                basket[name]={
+                    'name' : name,
+                    'amount' : (amount + buffer['amount']),
+                    'sum' : (price * amount) + buffer['sum']
+                };
+            }
+            else{
+                basket[name]={
+                    'name' : name,
+                    'amount' : (amount),
+                    'sum' : (price * amount)
+                };
+            }
+            updateBill(basket)
+            console.log(basket)
+        }
+
+        function updateBill(basket){
+            let tableRef = document.getElementById("bill");
+            tableRef.innerHTML = "";
+            total = 0;
+            for(item in basket){
+                let newRow = tableRef.insertRow(-1);
+                let amountCell = newRow.insertCell(0);
+                let nameCell = newRow.insertCell(1);
+                let sumCell = newRow.insertCell(2);
+                amountCell.setAttribute('class', 'columnAmount')
+                nameCell.setAttribute('class', 'columnName')
+                sumCell.setAttribute('class', 'columnSum')
+                nameCell.innerHTML = basket[item]['name'];
+                amountCell.innerHTML = basket[item]['amount'];
+                sumCell.innerHTML = basket[item]['sum'].toFixed(2) + "€";
+                total += basket[item]['sum'];
+            }
+
+            let newRow = tableRef.insertRow(-1);
+            let amountCell = newRow.insertCell(0);
+            let nameCell = newRow.insertCell(1);
+            let sumCell = newRow.insertCell(2);
+            amountCell.setAttribute('class', 'columnAmount')
+            nameCell.setAttribute('class', 'columnName')
+            sumCell.setAttribute('class', 'columnTotal')
+            nameCell.innerHTML = "<b>Total</b>";
+            amountCell.innerHTML = "";
+            sumCell.innerHTML = "<b>" + total.toFixed(2) + "€</b>";
+
+            document.getElementById("check-out").style.visibility = "visible";
+    }
+
+    function submitBill(cash){
+        let _data = {
+            'cash' : cash,
+            'basket' : basket,
+            'team_id' : {{ team.team_id }}
+        };
+        fetch("{{ url_for('admin_cashRegister_checkout') }}", {
+              method: "POST",
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(_data)
+            }).then(res => {
+              console.log("Request complete! response:", res);
+              location = '{{ url_for("admin_cashRegister_teams") }}';
+            });
+        }
+
+    </script>
+{% endblock %}{% block style %}
+<style>
+
+    .columnAmount{
+        text-align: right;
+        vertical-align: bottom;
+        padding: 5px;
+    }
+    .columnName{
+        text-align: left;
+        vertical-align: bottom;
+        padding: 5px;
+    }
+    .columnSum{
+        text-align: left;
+        vertical-align: bottom;
+        padding: 5px;
+    }
+    .columnTotal{
+        text-align: right;
+        vertical-align: bottom;
+        padding: 5px;
+    }
+</style>
+{% endblock %}

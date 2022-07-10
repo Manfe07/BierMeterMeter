@@ -4,6 +4,7 @@
     <div style="padding: 10px">
         {% if user.permission >= 1 %}
             <a href="{{ url_for('adminTheke') }}" class="btn btn-primary" role="button">Theke</a><br><br>
+            <a href="{{ url_for('admin_cashRegister_teams') }}" class="btn btn-primary" role="button">Kasse</a><br><br>
         {% endif %}
         {% if user.permission >= 2 %}
             <a href="{{ url_for('adminTeams') }}" class="btn btn-primary" role="button">Teams Verwalten</a><br><br>

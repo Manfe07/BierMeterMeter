@@ -36,6 +36,29 @@ def init():
                     );
                 ''')
 
+        #Create Table "items"
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS items (
+                id INTEGER PRIMARY KEY,
+                name VARCHAR(100) UNIQUE NOT NULL,
+                price DECIMAL(5,2)
+            );
+        ''')
+
+
+        #Create Table "order_history"
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS order_history (
+                id INTEGER PRIMARY KEY,
+                team_id INTEGER  NOT NULL,
+                item VARCHAR(100) UNIQUE NOT NULL,
+                amount INTEGER UNIQUE NOT NULL,
+                price DECIMAL(5,2),
+                user_name VARCHAR(100),
+                cash INTEGER 
+            );
+        ''')
+
         con.commit()
         con.close()
 
@@ -149,6 +172,33 @@ def delete_Info(id):
 
         con.commit()
         con.close()
+
+def get_Items():
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        list = []
+        result = cur.execute('SELECT * FROM items ORDER BY name ASC')
+        for row in result:
+                list.append({
+                        "id":row[0],
+                        "name":row[1],
+                        "price":row[2]
+                })
+
+        con.close()
+        return list
+
+
+def add_Order(_data : dict):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+        # TODO: add insert Function
+        #cur.execute("INSERT INTO order_history(team_id, item, amount, price, user_name, cash) VALUES (?,?)", (title,content))
+
+        con.commit()
+        con.close()
+
 
 
 
