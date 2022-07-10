@@ -15,7 +15,8 @@ def init():
                 id INTEGER PRIMARY KEY,
                 username VARCHAR(100) UNIQUE,
                 password VARCHAR(200),
-                email VARCHAR(200) UNIQUE
+                email VARCHAR(200) UNIQUE,
+                permission INTEGER NOT NULL
             );
         ''')
 
@@ -51,11 +52,11 @@ def verify(username, password):
                 data = cur.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
                 hash = data[2]
                 if sha256_crypt.verify(password, hash):
-                        return True
+                        return True, data[4]
                 else:
-                        return False
+                        return False, 0
         else:
-                return False
+                return False, 0
 
 if __name__ == "__main__":
         init()

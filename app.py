@@ -35,28 +35,35 @@ def infos():  # put application's code here
 def login():
     if request.method == 'POST':
         login = request.form
-
         userName = login['username']
         password = login['password']
 
-        if user.verify(userName,password):
-          session['logged_in'] = True
+        signedIn, permission = user.verify(userName,password)
+        if signedIn:
+            session['logged_in'] = True
+            session['permission'] = permission
+            session['user_name'] = userName
         else:
-          session['logged_in'] = False
-          flash('wrong password!')
+            session['logged_in'] = False
+            session['permission'] = 0
+            session['user_name'] = None
+            flash('wrong password!')
+        print(session)
         return redirect(url_for('admin'))
     else:
         return render_template('login.html')
 
 @app.route('/logout')
 def logout():
-  session['logged_in'] = False
-  return redirect(url_for('ranking'))
+    session['logged_in'] = False
+    session['permission'] = 0
+    session['user_name'] = None
+    return redirect(url_for('ranking'))
 
 
 @app.route('/admin/addUser', methods=['POST','GET'])
 def add_user():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         if request.method == 'POST':
             login = request.form
 
@@ -76,14 +83,18 @@ def add_user():
 
 @app.route('/admin')
 def admin():
-    if session.get("logged_in"):
-        return render_template('admin.html')
+    if session.get("logged_in") and session.get("permission") >= 1:
+        user = {
+            'name': session.get('user_name'),
+            'permission': session.get('permission'),
+        }
+        return render_template('admin.html', user = user)
     else:
         return redirect(url_for('login'))
 
 @app.route('/admin/theke')
 def adminTheke():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 1:
         teams = datahandler.get_Teams()
         return render_template('admin_theke.html', teams = teams)
     else:
@@ -91,7 +102,7 @@ def adminTheke():
 
 @app.route('/admin/infos')
 def adminInfos():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         infos = datahandler.get_Infos()
         return render_template('admin_info.html', infos = infos)
     else:
@@ -99,7 +110,7 @@ def adminInfos():
 
 @app.route('/admin/teams')
 def adminTeams():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         teams = datahandler.get_Teams()
         return render_template('admin_teams.html', teams = teams)
     else:
@@ -108,7 +119,7 @@ def adminTeams():
 
 @app.route('/api/addInfo', methods=['POST'])
 def api_addInfo():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         title = request.form.get("title")
         content = request.form.get("content")
         if (title and content):
@@ -121,7 +132,7 @@ def api_addInfo():
 
 @app.route('/api/deleteInfo', methods=['POST'])
 def api_deleteInfo():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         request_data = request.get_json()
         if 'id' in request_data:
             id = request_data["id"]
@@ -133,7 +144,7 @@ def api_deleteInfo():
 
 @app.route('/api/deleteTeam', methods=['POST'])
 def api_deleteTeam():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         request_data = request.get_json()
         if 'id' in request_data:
             id = request_data["id"]
@@ -146,7 +157,7 @@ def api_deleteTeam():
 
 @app.route('/api/addTeam', methods=['POST'])
 def api_addTeam():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 2:
         if request.method == 'POST':
             form = request.form
             name = form["name"]
@@ -161,7 +172,7 @@ def api_addTeam():
 
 @app.route('/api/beer', methods=['POST'])
 def api_beer():
-    if session.get("logged_in"):
+    if session.get("logged_in") and session.get("permission") >= 1:
         request_data = request.get_json()
 
         team = None
