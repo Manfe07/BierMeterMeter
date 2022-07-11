@@ -1,5 +1,6 @@
 import sqlite3
 import settings
+import pprint
 
 db_file = settings.db_file
 
@@ -203,6 +204,25 @@ def add_Order(_data : dict):
         con.commit()
         con.close()
 
+def get_OrderHistory():
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        list = []
+        result = cur.execute('SELECT * FROM order_history ORDER BY id DESC')
+        for row in result:
+                list.append({
+                        "id":row[0],
+                        "team_name":row[2],
+                        "item":row[3],
+                        "amount": row[4],
+                        "sum": row[5],
+                        "user": row[6],
+                        "cash": row[7],
+                        "timestamp": row[8],
+                })
+        con.close()
+        return list
 
 
 

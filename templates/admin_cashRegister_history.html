@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% block pagetitle %}Admin{% endblock %}
+{% block content %}
+    <div>
+        <table>
+            <tbody>
+                {% for order in history %}
+                    <tr style="padding: 5px; margin: 5px;">
+                        <td>{{ order.timestamp }}</td>
+                        <td style="text-align: right">{{ order.id }}</td>
+                        <td>{{ order.team_name }}</td>
+                        <td>{{ order.item }}</td>
+                        <td style="text-align: right">{{ order.amount }}</td>
+                        <td style="text-align: right">{{ order.sum }}</td>
+                        <td>{{ order.user }}</td>
+                        <td>
+                            <button class="btn-danger" onclick="console.log({{ order.id }})">Löschen</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+    </script>
+{% endblock %}{% block style %}
+<style>
+</style>
+{% endblock %}

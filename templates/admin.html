@@ -6,8 +6,9 @@
             <a href="{{ url_for('admin_cashRegister_teams') }}" class="btn btn-success btn-lg" role="button">Kasse</a><br><br>
         {% endif %}
         {% if user.permission >= 2 %}
-            <a href="{{ url_for('adminTeams') }}" class="btn btn-primary" role="button">Teams Verwalten</a><br><br>
-            <a href="{{ url_for('adminInfos') }}" class="btn btn-primary" role="button">Infos Verwalten</a><br><br>
+            <a href="{{ url_for('admin_cashRegister_history') }}" class="btn btn-warning" role="button">Käufe verwalten</a><br><br>
+            <a href="{{ url_for('adminTeams') }}" class="btn btn-primary" role="button">Teams verwalten</a><br><br>
+            <a href="{{ url_for('adminInfos') }}" class="btn btn-primary" role="button">Infos verwalten</a><br><br>
         {% endif %}
         {% if user.permission >= 3 %}
             <a href="{{ url_for('add_user') }}" class="btn btn-primary" role="button">Benutzer hinzufügen</a><br><br>

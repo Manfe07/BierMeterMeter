@@ -144,6 +144,15 @@ def admin_cashRegister_checkout():
     else:
         return redirect(url_for('login'))
 
+@app.route('/kasse/verlauf')
+def admin_cashRegister_history():
+    if session.get("logged_in") and session.get("permission") >= 2:
+        history = datahandler.get_OrderHistory()
+        return render_template('admin_cashRegister_history.html', history = history)
+    else:
+        return redirect(url_for('login'))
+
+
 @app.route('/admin/infos')
 def adminInfos():
     if session.get("logged_in") and session.get("permission") >= 2:
