@@ -240,7 +240,7 @@ def api_beer():
 
 @app.route('/api/getRanking')
 def getRanking():  # put application's code here
-    topList =datahandler.get_List(True)
+    topList =datahandler.get_List()
     return json.dumps(topList)
 
 

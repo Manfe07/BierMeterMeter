@@ -79,16 +79,13 @@ def beer(team : str, add : bool):
         con.close()
 
 
-def get_List(ranking = False):
+def get_List():
         con = sqlite3.connect(db_file)
         cur = con.cursor()
 
         list = []
         result = None
-        if ranking:
-                result = cur.execute('SELECT team_name, sum(amount) FROM order_history WHERE item="Biermeter" GROUP BY team_name ORDER BY sum(amount) DESC')
-        else:
-                result = cur.execute('SELECT team, count(*) FROM biermeter GROUP BY team ORDER BY team')
+        result = cur.execute('SELECT team_name, sum(amount) FROM order_history WHERE item="Biermeter" GROUP BY team_name ORDER BY sum(amount) DESC')
         for row in result:
                 list.append({""
                              "team": row[0],
