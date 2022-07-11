@@ -111,10 +111,10 @@ def admin_cashRegister_teams():
 @app.route('/kasse_items', methods=['GET', 'POST'])
 def admin_cashRegister_items():
     if session.get("logged_in") and session.get("permission") >= 1:
-        if(request.args.get('team_id')):
+        if not (request.args.get('team_id') == 0):
             team = {
                 'team_name' : request.args.get('team_name'),
-                'team_id' : request.args.get('team_id')
+                'team_id' : int(request.args.get('team_id'))
             }
         else:
             team = {

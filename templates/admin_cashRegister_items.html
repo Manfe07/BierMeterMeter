@@ -1,6 +1,8 @@
 {% extends "index.html" %}
 {% block pagetitle %}Admin{% endblock %}
 {% block content %}
+    <audio id="cash_sound" preload="auto"><source src="../static/sounds/cash.mp3" /></audio>
+    <audio id="click_sound" preload="auto"><source src="../static/sounds/click.wav" /></audio>
     <div style="padding: 10px">
         <h2>{{ team.team_name }}</h2>
     </div>
@@ -30,7 +32,9 @@
     </div>
 
     <div style="margin: 20px; visibility: hidden" id="check-out">
-        <button type="button" class="btn btn-danger" onclick="submitBill(false)"><b>Team-Konto<br>{{ team.team_name }}</b></button>
+        {% if (team.team_id != -1) %}
+            <button type="button" class="btn btn-danger" onclick="submitBill(false)"><b>Team-Konto<br>{{ team.team_name }}</b></button>
+        {% endif %}
         <button type="button" class="btn btn-warning" onclick="submitBill(true)"><b>Bar<br>EC</b></button><br><br>
         <button type="button" class="btn btn-secondary" onclick="location = '{{ url_for("admin_cashRegister_teams") }}'"><b>Bestellung<br>Abbrechen</b></button>
     </div>
@@ -38,6 +42,7 @@
 
     <script>
         let basket = {};
+
         function addItem(name, price, amount){
             if (name in basket){
                 buffer = basket[name];
@@ -54,6 +59,7 @@
                     'sum' : (price * amount)
                 };
             }
+            document.getElementById('click_sound').play();
             updateBill(basket)
             console.log(basket)
         }
@@ -91,6 +97,7 @@
     }
 
     function submitBill(cash){
+        document.getElementById('cash_sound').play();
         let _data = {
             'cash' : cash,
             'basket' : basket,
@@ -98,14 +105,16 @@
             'team_name' : "{{ team.team_name }}"
         };
         fetch("{{ url_for('admin_cashRegister_checkout') }}", {
-              method: "POST",
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify(_data)
-            }).then(res => {
-              console.log("Request complete! response:", res);
-              location = '{{ url_for("admin_cashRegister_teams") }}';
-            });
-        }
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(_data)
+        }).then(res => {
+            console.log("Request complete! response:", res);
+            setTimeout(function() {
+                location = '{{ url_for("admin_cashRegister_teams") }}';
+            }, 1000);
+        });
+    }
 
     </script>
 {% endblock %}{% block style %}

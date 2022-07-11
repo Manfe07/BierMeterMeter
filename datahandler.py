@@ -193,7 +193,6 @@ def get_Items():
 
 
 def add_Order(_data : dict):
-        print(_data)
         con = sqlite3.connect(db_file)
         cur = con.cursor()
         user_name = _data["user"]
