@@ -2,12 +2,12 @@
 {% block pagetitle %}Admin{% endblock %}
 {% block content %}
     <div style="padding: 10px">
+        <a style="margin: 20px" class="btn btn-large btn-info btn-lg" href="{{ url_for('admin_cashRegister_items',team_name = 'Ohne Team') }}">Ohne Team</a><br>
         {% for team in teams %}
             <a style="margin: 20px" class="btn btn-large btn-primary btn-lg" href="{{ url_for('admin_cashRegister_items',team_name = team['name'], team_id = team['id']) }}">
                 {{ team['name'] }}
             </a>
         {% endfor %}
-        <a style="margin: 20px" class="btn btn-large btn-primary btn-info" href="{{ url_for('admin_cashRegister_items',team_name = 'Ohne Team') }}">Ohne Team</a>
     </div>
     <script>
         function beer(team, add){
