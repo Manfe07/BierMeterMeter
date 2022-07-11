@@ -86,7 +86,7 @@ def get_List(ranking = False):
         list = []
         result = None
         if ranking:
-                result = cur.execute('SELECT team, count(*) FROM biermeter GROUP BY team ORDER BY count(*) DESC')
+                result = cur.execute('SELECT team_name, sum(amount) FROM order_history WHERE item="Biermeter" GROUP BY team_name ORDER BY sum(amount) DESC')
         else:
                 result = cur.execute('SELECT team, count(*) FROM biermeter GROUP BY team ORDER BY team')
         for row in result:
