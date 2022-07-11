@@ -50,12 +50,14 @@ def init():
         cur.execute('''
             CREATE TABLE IF NOT EXISTS order_history (
                 id INTEGER PRIMARY KEY,
-                team_id INTEGER  NOT NULL,
-                item VARCHAR(100) UNIQUE NOT NULL,
-                amount INTEGER UNIQUE NOT NULL,
+                team_id INTEGER NOT NULL,
+                team_name VARCHAR(100) NOT NULL,
+                item VARCHAR(100) NOT NULL,
+                amount INTEGER NOT NULL,
                 price DECIMAL(5,2),
                 user_name VARCHAR(100),
-                cash INTEGER 
+                cash INTEGER,
+                Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         ''')
 
@@ -191,11 +193,17 @@ def get_Items():
 
 
 def add_Order(_data : dict):
+        print(_data)
         con = sqlite3.connect(db_file)
         cur = con.cursor()
-        # TODO: add insert Function
-        #cur.execute("INSERT INTO order_history(team_id, item, amount, price, user_name, cash) VALUES (?,?)", (title,content))
-
+        user_name = _data["user"]
+        team_id = _data["team_id"]
+        team_name = _data["team_name"]
+        cash = _data["cash"]
+        basket = _data["basket"]
+        for item in basket:
+                cur.execute("INSERT INTO order_history(team_id, team_name, item, amount, price, user_name, cash) VALUES (?,?,?,?,?,?,?)",
+                            (team_id, team_name, basket[item]["name"], basket[item]["amount"], basket[item]["sum"], user_name, cash))
         con.commit()
         con.close()
 

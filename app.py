@@ -121,7 +121,6 @@ def admin_cashRegister_items():
                 'team_name' : "Ohne Mannschaft",
                 'team_id' : None
             }
-        print(team)
         items = datahandler.get_Items()
         return render_template('admin_cashRegister_items.html', team=team, items=items)
     else:
@@ -135,10 +134,11 @@ def admin_cashRegister_checkout():
             _data = {
                 'basket' : request_data["basket"],
                 'team_id' : request_data["team_id"],
+                'team_name' : request_data["team_name"],
                 'cash' : request_data["cash"],
                 'user' : session.get("user_name")
             }
-            datahandler.checkout(_data)
+            datahandler.add_Order(_data)
 
         return redirect(url_for('admin_cashRegister_teams'))
     else:

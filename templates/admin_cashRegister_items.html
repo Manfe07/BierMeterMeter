@@ -5,22 +5,37 @@
         <h2>{{ team.team_name }}</h2>
     </div>
     <div class="itemblock">
-        {% for item in items %}
-            <div class="item" style="margin: 20px">
-                <button class="btn btn-large btn-primary btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)">{{ item.name }} +1</button>
-                <button class="btn btn-large btn-warning btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 5)">{{ item.name }} +5</button>
-            </div>
-        {% endfor %}
+        <table>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td><button class="btn btn-large btn-primary btn-lg" style="float:right;" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)"><b>{{ item.name }}</b> +1<br> {{ "{:,.2f}€".format( item.price ) }}</button></td>
+                        <td><button class="btn btn-large btn-warning btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 5)"><b>{{ item.name }}</b> +5<br> {{ "{:,.2f}€".format( item.price * 5) }}</button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="itemblock">
+        <button class="btn btn-large btn-warning btn-lg" onclick="addItem('Sonstiges', 0.5, 1)"><b>0,50€</b></button>
+        <button class="btn btn-large btn-warning btn-lg" onclick="addItem('Sonstiges', 1, 1)"><b>1,00€</b></button>
+        <button class="btn btn-large btn-warning btn-lg" onclick="addItem('Sonstiges', 2.5, 1)"><b>2,50€</b></button>
+        <button class="btn btn-large btn-warning btn-lg" onclick="addItem('Sonstiges', 5, 1)"><b>5,00€</b></button>
+        <button class="btn btn-large btn-warning btn-lg" onclick="addItem('Sonstiges', 10, 1)"><b>10,00€</b></button>
+        <button class="btn btn-large btn-warning btn-lg" onclick="addItem('Sonstiges', 20, 1)"><b>20,00€</b></button>
     </div>
 
     <div style="margin: 20px">
-        <table id="bill" style="border: black solid; table-layout: auto;"></table>
+        <table id="bill" style="font-size: larger; border: black solid; table-layout: auto;"></table>
+    </div>
+    
+    <div style="margin: 20px; visibility: hidden" id="check-out">
+        <button type="button" class="btn btn-danger" onclick="submitBill(false)"><b>Team-Konto<br>{{ team.team_name }}</b></button>
+        <button type="button" class="btn btn-warning" onclick="submitBill(true)"><b>Bar<br>EC</b></button><br><br>
+        <button type="button" class="btn btn-secondary" onclick="location = '{{ url_for("admin_cashRegister_teams") }}'"><b>Bestellung<br>Abbrechen</b></button>
     </div>
 
-    <div style="margin: 20px; visibility: hidden" id="check-out">
-        <button type="button" class="btn btn-danger" onclick="submitBill(false)">Team-Konto<br>{{ team.team_name }}</button>
-        <button type="button" class="btn btn-warning" onclick="submitBill(true)">Bar<br>EC</button>
-    </div>
+
     <script>
         let basket = {};
         function addItem(name, price, amount){
@@ -79,7 +94,8 @@
         let _data = {
             'cash' : cash,
             'basket' : basket,
-            'team_id' : {{ team.team_id }}
+            'team_id' : {{ team.team_id }},
+            'team_name' : "{{ team.team_name }}"
         };
         fetch("{{ url_for('admin_cashRegister_checkout') }}", {
               method: "POST",
@@ -94,7 +110,10 @@
     </script>
 {% endblock %}{% block style %}
 <style>
-
+    .itemblock{
+        margin: 10px;
+        padding: 10px;
+    }
     .columnAmount{
         text-align: right;
         vertical-align: bottom;

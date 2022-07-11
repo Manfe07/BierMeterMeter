@@ -7,6 +7,7 @@
                 {{ team['name'] }}
             </a>
         {% endfor %}
+        <a style="margin: 20px" class="btn btn-large btn-primary btn-info" href="{{ url_for('admin_cashRegister_items',team_name = 'Ohne Team') }}">Ohne Team</a>
     </div>
     <script>
         function beer(team, add){
