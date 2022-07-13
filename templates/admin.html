@@ -4,6 +4,7 @@
     <div style="padding: 10px">
         {% if user.permission >= 1 %}
             <a href="{{ url_for('admin_cashRegister_teams') }}" class="btn btn-success btn-lg" role="button">Kasse</a><br><br>
+            <a href="{{ url_for('admin_cashRegister_bills') }}" class="btn btn-info" role="button">Abrechungen</a><br><br>
         {% endif %}
         {% if user.permission >= 2 %}
             <a href="{{ url_for('admin_cashRegister_history') }}" class="btn btn-warning" role="button">Käufe verwalten</a><br><br>

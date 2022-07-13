@@ -152,6 +152,14 @@ def admin_cashRegister_history():
     else:
         return redirect(url_for('login'))
 
+@app.route('/kasse/abrechnung')
+def admin_cashRegister_bills():
+    if session.get("logged_in") and session.get("permission") >= 1:
+        bills = datahandler.get_TeamBills(True)
+        return render_template('admin_cashRegister_bills.html', bills = bills)
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/admin/infos')
 def adminInfos():

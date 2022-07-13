@@ -234,8 +234,47 @@ def delete_Order(id):
         con.commit()
         con.close()
 
+def get_TeamBills(cash_filter = False, cash = False):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
 
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        teams={}
+
+        for team in get_Teams():
+                list = []
+                if not(cash_filter):
+                        result = cur.execute(
+                                "SELECT `item`, sum(`amount`), sum(`price`) FROM `order_history` WHERE `team_name`=? GROUP BY `item` ORDER BY `item` DESC",
+                                (team["name"],))
+                        for row in result:
+                                list.append({
+                                        "item": row[0],
+                                        "amount": row[1],
+                                        "sum": row[2]
+                                })
+
+                else:
+                        result = cur.execute(
+                                "SELECT `item`, sum(`amount`), sum(`price`), `cash` FROM `order_history` WHERE `team_name`=? GROUP BY `item`, `cash` ORDER BY `item` DESC",
+                                (team["name"],))
+
+                        for row in result:
+                                list.append({
+                                        "item": row[0],
+                                        "amount": row[1],
+                                        "sum": row[2],
+                                        "cash": row[3]
+                                })
+                teams[team["name"]] = list
+        return teams
+
+        con.commit()
+        con.close()
 
 
 if __name__ == "__main__":
         init()
+        pprint.pprint(get_TeamBills(True))
