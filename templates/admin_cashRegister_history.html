@@ -1,20 +1,30 @@
 {% extends "index.html" %}
 {% block pagetitle %}Admin{% endblock %}
 {% block content %}
-    <div>
-        <table>
+    <div style="overflow-x:auto; padding: 10px">
+        <table style=" border: solid black;">
             <tbody>
+                <tr>
+                    <th class="header-row">Nr.</th>
+                    <th class="header-row">Zeit</th>
+                    <th class="header-row">Team</th>
+                    <th class="header-row">Artikel</th>
+                    <th class="header-row">Stk.</th>
+                    <th class="header-row">Sume</th>
+                    <th class="header-row">Kassierer</th>
+                    <th class="header-row">Löschen</th>
+                </tr>
                 {% for order in history %}
                     <tr style="padding: 5px; margin: 5px;">
-                        <td>{{ order.timestamp }}</td>
-                        <td style="text-align: right">{{ order.id }}</td>
-                        <td>{{ order.team_name }}</td>
-                        <td>{{ order.item }}</td>
-                        <td style="text-align: right">{{ order.amount }}</td>
-                        <td style="text-align: right">{{ order.sum }}</td>
-                        <td>{{ order.user }}</td>
+                        <td class="basic-row" style="text-align: right">{{ order.id }}</td>
+                        <td class="basic-row">{{ order.timestamp }}</td>
+                        <td class="basic-row">{{ order.team_name }}</td>
+                        <td class="basic-row">{{ order.item }}</td>
+                        <td class="basic-row" style="text-align: right;">{{ order.amount }}</td>
+                        <td class="basic-row" style="text-align: right;">{{ "{:,.2f}€".format(order.sum) }}</td>
+                        <td class="basic-row">{{ order.user }}</td>
                         <td>
-                            <button class="btn-danger" onclick="console.log({{ order.id }})">Löschen</button>
+                            <button class="btn-danger" onclick="delete_Order({{ order.id }},'{{ order.team_name }}', '{{ order.item }}')">Löschen</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -22,9 +32,44 @@
         </table>
     </div>
     <script>
+        function delete_Order(id, team, item){
+            if (!confirm("⚠ Willst du wirklich die Bestellung Nr." + id + " von \"" + team + "\" löschen? ⚠")) {
+                    return;
+            }
+            else{
+                data = {
+                    "id": id,
+                };
+
+                fetch("{{url_for('api_cashRegister_deleteOrder')}}", {
+                  method: "POST",
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify(data)
+                }).then(res => {
+                  console.log("Request complete! response:", res);
+                  location.reload()
+                });
+            }
+        }
 
     </script>
-{% endblock %}{% block style %}
-<style>
-</style>
+    <style>
+    .header-row{
+        font-style: inherit;
+        padding: 5px;
+        text-align: center;
+        text-decoration: underline;
+        border: solid black;
+    }
+    .basic-row{
+        border-right: solid gray;
+        padding: 5px;
+    }
+
+    tr:nth-child(even) {background: #CCC}
+    tr:nth-child(odd) {background: #FFF}
+
+    </style>
+{% endblock %}
+{% block style %}
 {% endblock %}

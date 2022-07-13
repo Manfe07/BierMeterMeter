@@ -225,6 +225,17 @@ def get_OrderHistory():
         return list
 
 
+def delete_Order(id):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        cur.execute("DELETE FROM order_history WHERE id=?", (id,))
+
+        con.commit()
+        con.close()
+
+
+
 
 if __name__ == "__main__":
         init()

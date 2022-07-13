@@ -170,6 +170,19 @@ def adminTeams():
         return redirect(url_for('login'))
 
 
+@app.route('/api/cashRegister/deleteOrder', methods=['POST'])
+def api_cashRegister_deleteOrder():
+    if session.get("logged_in") and session.get("permission") >= 2:
+        request_data = request.get_json()
+        if 'id' in request_data:
+            id = request_data["id"]
+            datahandler.delete_Order(id)
+        return redirect(url_for('admin_cashRegister_history'))
+
+    else:
+        return redirect(url_for('login'))
+
+
 @app.route('/api/addInfo', methods=['POST'])
 def api_addInfo():
     if session.get("logged_in") and session.get("permission") >= 2:
