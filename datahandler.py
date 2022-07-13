@@ -241,9 +241,15 @@ def get_TeamBills(cash_filter = False, cash = False):
         con = sqlite3.connect(db_file)
         cur = con.cursor()
 
-        teams={}
-
-        for team in get_Teams():
+        team_bill={}
+        teams = get_Teams()
+        teams.append({
+                "id": -1,
+                "name": "Ohne Team",
+                "contactPerson": None,
+                "email": None,
+        })
+        for team in teams:
                 list = []
                 if not(cash_filter):
                         result = cur.execute(
@@ -268,11 +274,12 @@ def get_TeamBills(cash_filter = False, cash = False):
                                         "sum": row[2],
                                         "cash": row[3]
                                 })
-                teams[team["name"]] = list
-        return teams
+                team_bill[team["name"]] = list
 
         con.commit()
         con.close()
+
+        return team_bill
 
 
 if __name__ == "__main__":
