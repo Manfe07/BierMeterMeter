@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, Flask, request, jsonify, redirect, url_for, session, flash
-import datahandler
+import teams.datahandler as datahandler
 
 datahandler.init()
 
