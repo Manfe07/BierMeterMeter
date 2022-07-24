@@ -87,3 +87,16 @@ def bills():
         return render_template('cashRegister/bills.html', bills = bills)
     else:
         return redirect(url_for('login'))
+
+@cashRegister.route('/deleteOrder', methods=['POST'])
+def deleteOrder():
+    if session.get("logged_in") and session.get("permission") >= 2:
+        request_data = request.get_json()
+        if 'id' in request_data:
+            id = request_data["id"]
+            datahandler.delete_Order(id)
+        return redirect(url_for('cashRegister.history'))
+
+    else:
+        return redirect(url_for('login'))
+

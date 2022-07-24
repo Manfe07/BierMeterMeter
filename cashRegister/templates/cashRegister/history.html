@@ -41,7 +41,7 @@
                     "id": id,
                 };
 
-                fetch("{{url_for('api_cashRegister_deleteOrder')}}", {
+                fetch("{{url_for('cashRegister.deleteOrder')}}", {
                   method: "POST",
                   headers: {'Content-Type': 'application/json'},
                   body: JSON.stringify(data)

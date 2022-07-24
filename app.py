@@ -113,19 +113,6 @@ def adminInfos():
         return redirect(url_for('login'))
 
 
-@app.route('/api/cashRegister/deleteOrder', methods=['POST'])
-def api_cashRegister_deleteOrder():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        request_data = request.get_json()
-        if 'id' in request_data:
-            id = request_data["id"]
-            datahandler.delete_Order(id)
-        return redirect(url_for('admin_cashRegister_history'))
-
-    else:
-        return redirect(url_for('login'))
-
-
 @app.route('/api/addInfo', methods=['POST'])
 def api_addInfo():
     if session.get("logged_in") and session.get("permission") >= 2:
@@ -148,30 +135,6 @@ def api_deleteInfo():
             datahandler.delete_Info(id)
 
         return redirect(url_for('adminInfos'))
-    else:
-        return redirect(url_for('login'))
-
-
-@app.route('/api/beer', methods=['POST'])
-def api_beer():
-    if session.get("logged_in") and session.get("permission") >= 1:
-        request_data = request.get_json()
-
-        team = None
-        add = False
-        remove = False
-
-        if 'add' in request_data:
-            add = request_data["add"]
-
-        if 'remove' in request_data:
-            remove = request_data["remove"]
-
-        if 'team' in request_data:
-            team = request_data["team"]
-            datahandler.beer(team, add)
-        return render_template('admin_theke.html')
-
     else:
         return redirect(url_for('login'))
 
