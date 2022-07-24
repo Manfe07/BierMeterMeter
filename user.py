@@ -1,6 +1,7 @@
 import sqlite3
 import settings
 from passlib.hash import sha256_crypt
+import sys
 
 db_file = settings.db_file
 
@@ -35,10 +36,7 @@ def add_User(username, password, permission, email = None):
         cur = con.cursor()
         hash = sha256_crypt.hash(password)
         if not check_User(username):
-                if email:
-                        cur.execute("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", (username, hash, email))
-                else:
-                        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hash))
+                cur.execute("INSERT INTO users (username, password, permission, email) VALUES (?, ?, ?, ?)", (username, hash, permission, email))
                 con.commit()
                 con.close()
                 return 1
@@ -60,7 +58,11 @@ def verify(username, password):
 
 if __name__ == "__main__":
         init()
-        add_User("test","test")
-        print(verify("test","tests"))
-        print(verify("test","test"))
-        check_User("test")
+        if(sys.argv[1] and sys.argv[2]):
+                name = sys.argv[1]
+                pw = sys.argv[2]
+                add_User(name, pw, 3)
+
+                print("Created User")
+                print("name : " + name)
+                print("password : " + pw)

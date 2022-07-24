@@ -1,8 +1,8 @@
 {% extends "index.html" %}
-{% block pagetitle %}Admin{% endblock %}
+{% block pagetitle %}Kasse 🛒🍺 - Verlauf{% endblock %}
 {% block content %}
     <div style="overflow-x:auto; padding: 10px">
-        <table style=" border: solid black;">
+        <table class="table" style="width: auto">
             <tbody>
                 <tr>
                     <th class="header-row">Nr.</th>
@@ -54,18 +54,19 @@
 
     </script>
     <style>
-    .header-row{
-        font-style: inherit;
-        padding: 5px;
-        text-align: center;
-        text-decoration: underline;
-        border: solid black;
-    }
-    .basic-row{
-        border-right: solid gray;
-        padding: 5px;
-    }
-
+        /*
+        .header-row{
+            font-style: inherit;
+            padding: 5px;
+            text-align: center;
+            text-decoration: underline;
+            border: solid black;
+        }
+        .basic-row{
+            border-right: solid gray;
+            padding: 5px;
+        }
+        */
     tr:nth-child(even) {background: #CCC}
     tr:nth-child(odd) {background: #FFF}
 

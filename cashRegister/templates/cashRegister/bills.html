@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block pagetitle %}Admin{% endblock %}
+{% block pagetitle %}Kasse 🛒🍺 - Abrechnungen{% endblock %}
 {% block content %}
     <div style="overflow-x:auto; padding: 10px">
         {% for team in bills %}
@@ -7,7 +7,7 @@
                 <h3 style="padding-left: 5px">{{ team }}</h3>
                 <table style=" border: solid black;">
                     <tbody>
-                        <tr>
+                        <tr style="border: solid">
                             <th class="header-row">Artikel</th>
                             <th class="header-row">Menge</th>
                             <th class="header-row">Offen</th>
@@ -29,9 +29,8 @@
                                 {% endif %}
                             </tr>
                         {% endfor %}
-                        <tr style="padding: 5px; margin: 5px;">
-                            <td class="basic-row"><b>Total</b></td>
-                            <td class="basic-row" style="text-align: right"></td>
+                        <tr style="padding: 5px; margin: 5px; border: solid">
+                            <td class="basic-row" style="text-align: right;" colspan="2"><b>Total: </b></td>
                             <td class="basic-row credit" style="text-align: right"><b>{{ "{:,.2f}€".format(total.credit) }}</b></td>
                             <td class="basic-row" style="text-align: right"><b>{{ "{:,.2f}€".format(total.cash) }}</b></td>
                         </tr>
@@ -41,32 +40,6 @@
         {% endfor %}
     </div>
     <script>
-        function beer(team, add){
-            if(!add){
-                if (!confirm("⚠ Willst du wirklich von Team \"" + team + "\" ein Meter Bier Abziehen? ⚠")) {
-                    return;
-                }
-            }
-
-            data = {
-                "team": team,
-                "add": add,
-                "remomve": !add,
-            };
-
-            fetch("{{url_for('api_beer')}}", {
-              method: "POST",
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify(data)
-            }).then(res => {
-                if(add){
-                    alert("Ein Meter Bier🍺 wurde dem Team \"" + team + "\" hinzugefügt")
-                }
-              console.log("Request complete! response:", res);
-              location.reload()
-            });
-
-        }
     </script>
 {% endblock %}{% block style %}
 <style>
@@ -89,7 +62,7 @@
         padding: 10px;
     }
 
-    tr:nth-child(even) {background: #CCC}
-    tr:nth-child(odd) {background: #FFF}
+    tr:nth-child(odd) {background: #CCC}
+    tr:nth-child(even) {background: #FFF}
 </style>
 {% endblock %}

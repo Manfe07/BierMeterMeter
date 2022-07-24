@@ -1,22 +1,33 @@
 import os
-
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
-
+from cashRegister import cashRegister
+from items import items
+from teams import teams
 import settings
 import datahandler
 import user
 import json
+
+from pprint import pprint
 import logging
 
+buttonList = {'1':[],'2':[],'3':[]}
+buttonList = cashRegister.addButtons(buttonList)
+buttonList = items.addButtons(buttonList)
+buttonList = teams.addButtons(buttonList)
 
 app = Flask(__name__)
 datahandler.init()
 user.init()
 
+app.register_blueprint(cashRegister.cashRegister, url_prefix="/kasse")
+app.register_blueprint(items.items, url_prefix="/artikel")
+app.register_blueprint(teams.teams, url_prefix="/teams")
+
 #logging.basicConfig(filename='flask.log', level=logging.DEBUG)
-logging.basicConfig(filename='flask.log',
-    level=logging.DEBUG,
-    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+#logging.basicConfig(filename='flask.log',
+#    level=logging.DEBUG,
+#    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 @app.route('/')
 def ranking():  # put application's code here
@@ -88,75 +99,7 @@ def admin():
             'name': session.get('user_name'),
             'permission': session.get('permission'),
         }
-        return render_template('admin.html', user = user)
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/admin/theke')
-def adminTheke():
-    if session.get("logged_in") and session.get("permission") >= 1:
-        teams = datahandler.get_Teams()
-        return render_template('admin_theke.html', teams = teams)
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/kasse_teams', methods=['GET', 'POST'])
-def admin_cashRegister_teams():
-    if session.get("logged_in") and session.get("permission") >= 1:
-        teams = datahandler.get_Teams()
-        return render_template('admin_cashRegister_teams.html', teams = teams)
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/kasse_items', methods=['GET', 'POST'])
-def admin_cashRegister_items():
-    if session.get("logged_in") and session.get("permission") >= 1:
-        if not (request.args.get('team_id') == 0):
-            team = {
-                'team_name' : request.args.get('team_name'),
-                'team_id' : int(request.args.get('team_id'))
-            }
-        else:
-            team = {
-                'team_name' : "Ohne Mannschaft",
-                'team_id' : None
-            }
-        items = datahandler.get_Items()
-        return render_template('admin_cashRegister_items.html', team=team, items=items)
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/kasse_checkout', methods=['GET', 'POST'])
-def admin_cashRegister_checkout():
-    if session.get("logged_in") and session.get("permission") >= 1:
-        request_data = request.get_json()
-        if 'basket' in request_data:
-            _data = {
-                'basket' : request_data["basket"],
-                'team_id' : request_data["team_id"],
-                'team_name' : request_data["team_name"],
-                'cash' : request_data["cash"],
-                'user' : session.get("user_name")
-            }
-            datahandler.add_Order(_data)
-
-        return redirect(url_for('admin_cashRegister_teams'))
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/kasse/verlauf')
-def admin_cashRegister_history():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        history = datahandler.get_OrderHistory()
-        return render_template('admin_cashRegister_history.html', history = history)
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/kasse/abrechnung')
-def admin_cashRegister_bills():
-    if session.get("logged_in") and session.get("permission") >= 1:
-        bills = datahandler.get_TeamBills(True)
-        return render_template('admin_cashRegister_bills.html', bills = bills)
+        return render_template('admin.html', user = user, buttonList = buttonList)
     else:
         return redirect(url_for('login'))
 
@@ -166,14 +109,6 @@ def adminInfos():
     if session.get("logged_in") and session.get("permission") >= 2:
         infos = datahandler.get_Infos()
         return render_template('admin_info.html', infos = infos)
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/admin/teams')
-def adminTeams():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        teams = datahandler.get_Teams()
-        return render_template('admin_teams.html', teams = teams)
     else:
         return redirect(url_for('login'))
 
@@ -215,33 +150,6 @@ def api_deleteInfo():
         return redirect(url_for('adminInfos'))
     else:
         return redirect(url_for('login'))
-
-@app.route('/api/deleteTeam', methods=['POST'])
-def api_deleteTeam():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        request_data = request.get_json()
-        if 'id' in request_data:
-            id = request_data["id"]
-            datahandler.delete_Team(id)
-
-        return redirect(url_for('adminTeams'))
-    else:
-        return redirect(url_for('login'))
-
-
-@app.route('/api/addTeam', methods=['POST'])
-def api_addTeam():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        if request.method == 'POST':
-            form = request.form
-            name = form["name"]
-            contactPerson = form["contactPerson"]
-            email = form["email"]
-            datahandler.add_Team(name, contactPerson=contactPerson, email=email)
-
-            return redirect(url_for('adminTeams'))
-        else:
-            return redirect(url_for('login'))
 
 
 @app.route('/api/beer', methods=['POST'])

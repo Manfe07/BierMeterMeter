@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block pagetitle %}Admin{% endblock %}
+{% block pagetitle %}Kasse 🛒🍺 - Warenkorb{% endblock %}
 {% block content %}
     <audio id="cash_sound" preload="auto"><source src="../static/sounds/cash.mp3" /></audio>
     <audio id="click_sound" preload="auto"><source src="../static/sounds/click.wav" /></audio>
@@ -9,22 +9,28 @@
     <div class="itemblock">
         <table>
             <tbody>
-                {% for item in items %}
+                {% for item in itemlist %}
                     <tr>
-                        <td><button class="btn btn-large btn-primary btn-lg" style="float:right;" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)"><b>{{ item.name }}</b> +1<br> {{ "{:,.2f}€".format( item.price ) }}</button></td>
-                        <td><button class="btn btn-large btn-warning btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 5)"><b>{{ item.name }}</b> +5<br> {{ "{:,.2f}€".format( item.price * 5) }}</button></td>
+                        <td><button class="btn btn-large btn-primary btn-lg" style="float:right;" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)">+1 <b>{{ item.name }}</b><br> {{ "{:,.2f}€".format( item.price ) }}</button></td>
+                        <td><button class="btn btn-large btn-warning btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 5)">+5 <b>{{ item.name }}</b><br> {{ "{:,.2f}€".format( item.price * 5) }}</button></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="itemblock">
-        <button class="btn btn-large btn-warning" onclick="addItem('Sonstiges', 0.5, 1)"><b>0,50€</b></button>
-        <button class="btn btn-large btn-warning" onclick="addItem('Sonstiges', 1, 1)"><b>1,00€</b></button>
-        <button class="btn btn-large btn-warning" onclick="addItem('Sonstiges', 2.5, 1)"><b>2,50€</b></button>
-        <button class="btn btn-large btn-warning" onclick="addItem('Sonstiges', 5, 1)"><b>5,00€</b></button>
-        <button class="btn btn-large btn-warning" onclick="addItem('Sonstiges', 10, 1)"><b>10,00€</b></button>
-        <button class="btn btn-large btn-warning" onclick="addItem('Sonstiges', 20, 1)"><b>20,00€</b></button>
+        <table>
+            <tr>
+                <td><button class="btn btn-large btn-warning btn-table" onclick="addItem('Sonstiges', 0.5, 1)"><b>0,50€</b></button></td>
+                <td><button class="btn btn-large btn-warning btn-table" onclick="addItem('Sonstiges', 1, 1)"><b>1,00€</b></button></td>
+                <td><button class="btn btn-large btn-warning btn-table" onclick="addItem('Sonstiges', 2.5, 1)"><b>2,50€</b></button></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-large btn-warning btn-table" onclick="addItem('Sonstiges', 5, 1)"><b>5,00€</b></button></td>
+                <td><button class="btn btn-large btn-warning btn-table" onclick="addItem('Sonstiges', 10, 1)"><b>10,00€</b></button></td>
+                <td><button class="btn btn-large btn-warning btn-table" onclick="addItem('Sonstiges', 20, 1)"><b>20,00€</b></button></td>
+            </tr>
+        </table>
     </div>
 
     <div style="margin: 20px">
@@ -36,7 +42,7 @@
             <button type="button" class="btn btn-danger" onclick="submitBill(false)"><b>Team-Konto<br>{{ team.team_name }}</b></button>
         {% endif %}
         <button type="button" class="btn btn-warning" onclick="submitBill(true)"><b>Bar<br>EC</b></button><br><br>
-        <button type="button" class="btn btn-secondary" onclick="location = '{{ url_for("admin_cashRegister_teams") }}'"><b>Bestellung<br>Abbrechen</b></button>
+        <button type="button" class="btn btn-secondary" onclick="location = '{{ url_for("cashRegister.teams") }}'"><b>Bestellung<br>Abbrechen</b></button>
     </div>
 
 
@@ -104,14 +110,14 @@
             'team_id' : {{ team.team_id }},
             'team_name' : "{{ team.team_name }}"
         };
-        fetch("{{ url_for('admin_cashRegister_checkout') }}", {
+        fetch("{{ url_for('cashRegister.checkout') }}", {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(_data)
         }).then(res => {
             console.log("Request complete! response:", res);
             setTimeout(function() {
-                location = '{{ url_for("admin_cashRegister_teams") }}';
+                location = '{{ url_for("cashRegister.teams") }}';
             }, 1000);
         });
     }
@@ -142,6 +148,10 @@
         text-align: right;
         vertical-align: bottom;
         padding: 5px;
+    }
+
+    .btn-table{
+        width: 80px;
     }
 </style>
 {% endblock %}

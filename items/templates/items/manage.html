@@ -1,0 +1,74 @@
+{% extends "index.html" %}
+{% block pagetitle %}Artikel Verwalten{% endblock %}
+{% block content %}
+    <div style="padding: 10px;width: auto">
+        <form action="{{ url_for('items.addItem') }}" method="POST" enctype='application/json'>
+            <div class="contentDiv">
+                <div class="app-title">
+                    <h1>Artikel hinzufügen</h1>
+                </div>
+                <div class="control-group">
+                    <input type="text" required class="login-field" value="" placeholder="Name" name="name">
+                </div>
+                <div class="control-group">
+                    <input type="number" required class="login-field" value="" step="0.01" min="0.00" placeholder="Preis" name="price">
+                </div>
+                <br>
+                <input type="submit" value="Erstellen" class="btn btn-primary btn-large btn-block">
+            </div>
+        </form>
+    </div>
+    <div style="padding: 10px">
+        <table class="table" style="width: auto">
+            <tr class="table-header">
+                <th>ID</th>
+                <th>Artikel</th>
+                <th>Preis</th>
+                <th>Ersteller</th>
+                <th style="width: 0%"></th>
+                <th></th>
+            </tr>
+            {% for item in itemlist %}
+                <tr>
+                    <td class="table-content">{{ item["id"] }}</td>
+                    <td class="table-content">{{ item["name"] }}</td>
+                    <td class="table-currency">{{ "{:,.2f}€".format( item.price) }}</td>
+                    <td class="table-content">{{ item["editor"] }}</td>
+                    <!-- <td class="table-content"><button class="btn-warning" onclick="deleteItem({{ item["id"] }})">Ändern</button></td> -->
+                    <td class="table-content"><button class="btn-danger" onclick="deleteItem({{ item["id"] }}, '{{ item["name"] }}')">Löschen</button></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script>
+        function deleteItem(id, item){
+            if (confirm("⚠🚨 Willst du wirklich \"" + item + "\" Löschen? 🚨⚠")) {
+                fetch("{{url_for('items.deleteItem')}}", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({'id':id})
+                }).then(res => {
+                    alert("\"" + item + "\" wurde gelöscht")
+                    console.log("Request complete! response:", res);
+                    location.reload()
+                });
+            }
+        }
+    </script>
+{% endblock %}
+{% block style %}
+    <style>
+        .table-content{
+            text-align: left;
+            vertical-align: center;
+            white-space: nowrap;
+            padding-left: 5px;
+        }
+        .table-currency{
+            text-align: right;
+            vertical-align: center;
+            white-space: nowrap;
+            padding-left: 5px;
+        }
+    </style>
+{% endblock %}

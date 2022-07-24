@@ -1,8 +1,8 @@
 {% extends "index.html" %}
-{% block pagetitle %}Admin{% endblock %}
+{% block pagetitle %}Admin Teams{% endblock %}
 {% block content %}
     <div style="padding: 10px">
-        <form action="{{ url_for('api_addTeam') }}" method="POST">
+        <form action="{{ url_for('teams.addTeam') }}" method="POST" enctype='application/json'>
             <div class="contentDiv">
                 <div class="app-title">
                     <h1>Team erstellen</h1>
@@ -51,7 +51,7 @@
     <script>
         function deleteTeam(id, team){
             if (confirm("⚠🚨 Willst du wirklich das Team \"" + team + "\" Löschen? 🚨⚠")) {
-                fetch("{{url_for('api_deleteTeam')}}", {
+                fetch("{{url_for('teams.deleteTeam')}}", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({'id':id})

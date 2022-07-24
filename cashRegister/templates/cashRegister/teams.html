@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block pagetitle %}Kasse 🛒🍺 - Teamauswahl{% endblock %}
+{% block content %}
+    <div style="padding: 10px">
+        <a style="margin: 20px" class="btn btn-large btn-info btn-lg" href="{{ url_for('cashRegister.items',team_name = 'Ohne Team', team_id=-1) }}">Ohne Team</a><br>
+        {% for team in teams %}
+            <a style="margin: 20px" class="btn btn-large btn-primary btn-lg" href="{{ url_for('cashRegister.items',team_name = team['name'], team_id = team['id']) }}">
+                {{ team['name'] }}
+            </a>
+        {% endfor %}
+    </div>
+    <script>cashRegister_
+    </script>
+{% endblock %}{% block style %}
+<style>
+</style>
+{% endblock %}
