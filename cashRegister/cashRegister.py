@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, Flask, request, jsonify, redirect, url_for, session, flash
 import cashRegister.datahandler as datahandler
 import items.datahandler as itemlist
+import teams.datahandler as teamlist
 
 datahandler.init()
 
@@ -32,7 +33,7 @@ def addButtons(buttonList : dict):
 @cashRegister.route('/teams', methods=['GET', 'POST'])
 def teams():
     if session.get("logged_in") and session.get("permission") >= 1:
-        teams = datahandler.get_Teams()
+        teams = teamlist.get_Teams()
         return render_template('cashRegister/teams.html', teams = teams)
     else:
         return redirect(url_for('login'))

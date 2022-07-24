@@ -141,7 +141,7 @@ def api_deleteInfo():
 
 @app.route('/api/getRanking')
 def getRanking():  # put application's code here
-    topList =datahandler.get_List()
+    topList = cashRegister.datahandler.get_List()
     return json.dumps(topList)
 
 

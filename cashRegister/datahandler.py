@@ -1,7 +1,7 @@
 import sqlite3
 import settings
 import pprint
-
+import teams.datahandler as teamlist
 db_file = settings.db_file
 
 def init():
@@ -26,20 +26,19 @@ def init():
         con.commit()
         con.close()
 
-def get_Teams():
+
+def get_List():
         con = sqlite3.connect(db_file)
         cur = con.cursor()
 
         list = []
-        result = cur.execute('SELECT * FROM teams ORDER BY name ASC')
+        result = None
+        result = cur.execute('SELECT team_name, sum(amount) FROM order_history WHERE item="Biermeter" GROUP BY team_name ORDER BY sum(amount) DESC')
         for row in result:
-                list.append({
-                        "id":row[0],
-                        "name":row[1],
-                        "contactPerson":row[2],
-                        "email":row[3],
-                })
-
+                list.append({""
+                             "team": row[0],
+                             "amount" : row[1]
+                             })
         con.close()
         return list
 
@@ -96,7 +95,7 @@ def get_TeamBills(cash_filter = False, cash = False):
         cur = con.cursor()
 
         team_bill={}
-        teams = get_Teams()
+        teams = teamlist.get_Teams()
         teams.append({
                 "id": -1,
                 "name": "Ohne Team",
