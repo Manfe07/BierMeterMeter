@@ -65,6 +65,7 @@
                     'sum' : (price * amount)
                 };
             }
+            document.getElementById('click_sound').currentTime=0;
             document.getElementById('click_sound').play();
             updateBill(basket)
             console.log(basket)
