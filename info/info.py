@@ -25,7 +25,7 @@ def manage():
         infos = datahandler.get_Infos()
         return render_template('info/manage.html', infos = infos)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 
 @info.route('/api/addInfo', methods=['POST'])
@@ -38,7 +38,7 @@ def addInfo():
         return redirect(url_for('info.manage'))
 
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 
 @info.route('/api/deleteInfo', methods=['POST'])
@@ -51,4 +51,4 @@ def deleteInfo():
 
         return redirect(url_for('info.manage'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))

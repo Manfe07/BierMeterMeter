@@ -22,7 +22,7 @@ def manage():
     if session.get("logged_in") and session.get("permission") >= 2:
         return render_template("items/manage.html", itemlist = datahandler.get_Items())
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @items.route('/addItem', methods=['GET', 'POST'])
 def addItem():
@@ -36,7 +36,7 @@ def addItem():
 
         return redirect(url_for('items.manage'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @items.route('/deleteItem', methods=['POST'])
 def deleteItem():
@@ -48,5 +48,5 @@ def deleteItem():
 
         return redirect(url_for('item.manage'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 

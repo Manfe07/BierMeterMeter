@@ -21,7 +21,7 @@ def manage():
         teams = datahandler.get_Teams()
         return render_template('teams/manage.html', teams = teams)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @teams.route('/deleteTeam', methods=['POST'])
 def deleteTeam():
@@ -33,7 +33,7 @@ def deleteTeam():
 
         return redirect(url_for('teams.manage'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 
 @teams.route('/addTeam', methods=['POST', 'GET'])
@@ -48,4 +48,4 @@ def addTeam():
 
             return redirect(url_for('teams.manage'))
         else:
-            return redirect(url_for('login'))
+            return redirect(url_for('user.login'))

@@ -16,9 +16,8 @@
             {% for button in buttonList['3'] %}
                 <a href="{{ url_for(button['site']) }}" class="{{ button['class'] }}" role="button">{{ button['text'] }}</a><br><br>
             {% endfor %}
-            <a href="{{ url_for('add_user') }}" class="btn btn-primary" role="button">Benutzer hinzufügen</a><br><br>
         {% endif %}
-        <a href="{{ url_for('logout') }}" class="btn btn-danger" role="button">Logout</a><br><br>
+        <a href="{{ url_for('user.logout') }}" class="btn btn-danger" role="button">Logout</a><br><br>
     </div>
 {% endblock %}
 {% block style %}

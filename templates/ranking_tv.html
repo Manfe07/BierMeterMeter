@@ -20,7 +20,7 @@
             let tableRef = document.getElementById(tableID);
             tableRef.innerHTML = "";
 
-            $.getJSON('{{ url_for("getRanking") }}', function(data) {
+            $.getJSON('{{ url_for("getRanking_TV") }}', function(data) {
                 for(team in data){
                     let newRow = tableRef.insertRow(-1);
                     let teamCell = newRow.insertCell(0);
