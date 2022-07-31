@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from cashRegister import cashRegister
 from items import items
 from teams import teams
+from info import info
 import settings
 import datahandler
 import user
@@ -15,6 +16,7 @@ buttonList = {'1':[],'2':[],'3':[]}
 buttonList = cashRegister.addButtons(buttonList)
 buttonList = items.addButtons(buttonList)
 buttonList = teams.addButtons(buttonList)
+buttonList = info.addButtons(buttonList)
 
 app = Flask(__name__)
 datahandler.init()
@@ -23,6 +25,7 @@ user.init()
 app.register_blueprint(cashRegister.cashRegister, url_prefix="/kasse")
 app.register_blueprint(items.items, url_prefix="/artikel")
 app.register_blueprint(teams.teams, url_prefix="/teams")
+app.register_blueprint(info.info, url_prefix="/info")
 
 #logging.basicConfig(filename='flask.log', level=logging.DEBUG)
 #logging.basicConfig(filename='flask.log',
@@ -36,11 +39,6 @@ def ranking():  # put application's code here
 @app.route('/tv')
 def ranking_TV():  # put application's code here
     return render_template('ranking_tv.html')
-
-@app.route('/infos')
-def infos():  # put application's code here
-    infos = datahandler.get_Infos()
-    return render_template('infos.html', infos = infos)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -103,40 +101,6 @@ def admin():
     else:
         return redirect(url_for('login'))
 
-
-@app.route('/admin/infos')
-def adminInfos():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        infos = datahandler.get_Infos()
-        return render_template('admin_info.html', infos = infos)
-    else:
-        return redirect(url_for('login'))
-
-
-@app.route('/api/addInfo', methods=['POST'])
-def api_addInfo():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        title = request.form.get("title")
-        content = request.form.get("content")
-        if (title and content):
-            datahandler.add_Info(title, content)
-        return redirect(url_for('adminInfos'))
-
-    else:
-        return redirect(url_for('login'))
-
-
-@app.route('/api/deleteInfo', methods=['POST'])
-def api_deleteInfo():
-    if session.get("logged_in") and session.get("permission") >= 2:
-        request_data = request.get_json()
-        if 'id' in request_data:
-            id = request_data["id"]
-            datahandler.delete_Info(id)
-
-        return redirect(url_for('adminInfos'))
-    else:
-        return redirect(url_for('login'))
 
 
 @app.route('/api/getRanking')

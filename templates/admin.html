@@ -11,7 +11,6 @@
             {% for button in buttonList['2'] %}
                 <a href="{{ url_for(button['site']) }}" class="{{ button['class'] }}" role="button">{{ button['text'] }}</a><br><br>
             {% endfor %}
-            <a href="{{ url_for('adminInfos') }}" class="btn btn-primary" role="button">Infos verwalten</a><br><br>
         {% endif %}
         {% if user.permission >= 3 %}
             {% for button in buttonList['3'] %}
