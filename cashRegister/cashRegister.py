@@ -5,8 +5,7 @@ import teams.datahandler as teamlist
 
 datahandler.init()
 
-cashRegister = Blueprint('cashRegister', __name__,
-                        template_folder='templates')
+cashRegister = Blueprint('cashRegister', __name__, template_folder='templates')
 
 
 
@@ -36,7 +35,7 @@ def teams():
         teams = teamlist.get_Teams()
         return render_template('cashRegister/teams.html', teams = teams)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @cashRegister.route('/items', methods=['GET', 'POST'])
 def items():
@@ -53,7 +52,7 @@ def items():
             }
         return render_template('cashRegister/items.html', team=team, itemlist = itemlist.get_Items())
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @cashRegister.route('/checkout', methods=['GET', 'POST'])
 def checkout():
@@ -71,7 +70,7 @@ def checkout():
 
         return redirect(url_for('cashRegister/teams'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @cashRegister.route('/verlauf')
 def history():
@@ -79,7 +78,7 @@ def history():
         history = datahandler.get_OrderHistory()
         return render_template('cashRegister/history.html', history = history)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @cashRegister.route('/abrechnung')
 def bills():
@@ -87,7 +86,7 @@ def bills():
         bills = datahandler.get_TeamBills(True)
         return render_template('cashRegister/bills.html', bills = bills)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
 @cashRegister.route('/deleteOrder', methods=['POST'])
 def deleteOrder():
@@ -99,5 +98,5 @@ def deleteOrder():
         return redirect(url_for('cashRegister.history'))
 
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('user.login'))
 
