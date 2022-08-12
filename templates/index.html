@@ -15,7 +15,7 @@
 <body>
     <div id="navbar">
         <div class="left"><a href="{{ url_for('ranking') }}">Ranking</a></div>
-        <div class="left"><a href="{{ url_for('infos') }}">Infos</a></div>
+        <div class="left"><a href="{{ url_for('info.infos') }}">Infos</a></div>
         <div class="right"><a href="{{ url_for('admin') }}">Admin</a></div>
     </div>
     {% block content %}{% endblock %}
@@ -29,7 +29,8 @@
     -->
 </body>
 {% block style %}{% endblock %}
-<style>#navbar {
+<style>
+#navbar {
   overflow: hidden;
   background-color: #333;
 }

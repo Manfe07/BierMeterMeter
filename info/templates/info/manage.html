@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 {% block pagetitle %}Admin Infos{% endblock %}
 {% block content %}
-    <form action="{{ url_for('api_addInfo') }}" method="POST">
+    <form action="{{ url_for('info.addInfo') }}" method="POST">
         <div style="padding: 10px;">
             <div class="contentDiv">
                 <div>
@@ -33,7 +33,7 @@
 <script>
     function deletePost(id, title){
         if (confirm("⚠ Willst du den Post \"" + title + "\" wirklich löschen? ⚠")) {
-            fetch("{{url_for('api_deleteInfo')}}", {
+            fetch("{{url_for('info.deleteInfo')}}", {
               method: "POST",
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({'id': id})
@@ -50,4 +50,11 @@
 </script>
 {% endblock %}
 {% block style %}
+    <style>
+        th {
+          background-color: #04AA6D;
+          color: white;
+        }
+        tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
 {% endblock %}

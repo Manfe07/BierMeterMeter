@@ -1,33 +1,24 @@
 {% extends "index.html" %}
 {% block pagetitle %}Ranking🏆{% endblock %}
 {% block content %}
-    <table id="rankingTable"></table>
-
-    <script>
-        function updateTable(tableID) {
-            let tableRef = document.getElementById(tableID);
-            tableRef.innerHTML = "";
-
-            $.getJSON('{{ url_for("getRanking") }}', function(data) {
-                for(team in data){
-                    let newRow = tableRef.insertRow(-1);
-                    let teamCell = newRow.insertCell(0);
-                    let beerCell = newRow.insertCell(1);
-                    teamCell.setAttribute('class', 'columnTeam')
-                    beerCell.setAttribute('class', 'columnBeer')
-                    teamCell.innerHTML = data[team]["team"];
-                    beerCell.innerHTML = data[team]["amount"] + " ";
-                    for (let i = 0; i < data[team]["amount"]; i++) {
-                        beerCell.innerHTML += "🍺";
-                    }
-                }
-            });
-        }
-
-        // Call addRow() with the table's ID
-        updateTable("rankingTable")
-        setInterval(updateTable, 60000, 'rankingTable')
-    </script>
+    {% for day in ranking_list %}
+        <div style="margin-top: 20px;">
+            <h2>{{ day }}</h2>
+            <table id="rankingTable">
+                {% for team in ranking_list[day] %}
+                    <tr>
+                        <td class="columnTeam"><b>{{ team["team"] }}</b></td>
+                        <td class="columnCnt">{{ team["amount"] }}</td>
+                        <td class="columnBeer">
+                            {% for n in range(team["amount"]) %}
+                                🍺
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
 {% endblock %}
 {% block style %}
 <style>
@@ -37,10 +28,17 @@
     }
     .columnTeam{
         text-align: right;
-        vertical-align: bottom;
+        vertical-align: center;
         width:0.1%;
         white-space: nowrap;
         padding: 5px;
+    }
+    .columnCnt{
+        text-align: right;
+        vertical-align: center;
+        width:0.1%;
+        white-space: nowrap;
+        padding-left: 5px;
     }
     .columnBeer{
         text-align: left;
