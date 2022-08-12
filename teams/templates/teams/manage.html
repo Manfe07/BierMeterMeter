@@ -14,7 +14,10 @@
                     <input type="text" class="login-field" value="" placeholder="Ansprechperson" name="contactPerson">
                 </div>
                 <div class="control-group">
-                    <input type="email" class="login-field" value="" placeholder="email" name="email">
+                    <input type="number" class="login-field" value="" placeholder="Gruppe" name="group" required>
+                </div>
+                <div class="control-group">
+                  <input type="tel" id="mobile" name="mobile" placeholder="Handynummer">
                 </div><br>
                     <input type="submit" value="Erstellen" class="btn btn-primary btn-large btn-block">
             </div>
@@ -24,6 +27,7 @@
         <table class="table" style="width: auto">
             <tr class="table-header">
                 <th>ID</th>
+                <th>Gruppe</th>
                 <th>Name</th>
                 <th>Schiedsrichter</th>
                 <th>Handynummer</th>
@@ -32,6 +36,7 @@
             {% for team in teams %}
                 <tr>
                     <td><a>{{ team['id'] }}</a></td>
+                    <td class="table-content"><a>{{ team['group'] }}</a></td>
                     <td class="table-content"><a>{{ team['name'] }}</a></td>
                     <td class="table-content">
                         {% if team['contactPerson'] %}
@@ -40,7 +45,13 @@
                             <a>na</a>
                         {% endif %}
                     </td>
-                    <td class="table-content">na</td>
+                    <td class="table-content">
+                         {% if team['mobile'] %}
+                            <a href="tel:{{ team['mobile'] }}">{{ team['mobile'] }}</a>
+                        {% else %}
+                            <a>na</a>
+                        {% endif %}
+                    </td>
                     <td>
                         <button class="btn btn-danger btn-block" onclick="deleteTeam({{ team['id'] }}, '{{ team['name'] }}')">Löschen</button>
                     </td>

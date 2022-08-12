@@ -42,9 +42,10 @@ def addTeam():
         if request.method == 'POST':
             form = request.form
             name = form["name"]
+            group = form["group"]
             contactPerson = form["contactPerson"]
-            email = form["email"]
-            datahandler.add_Team(name, contactPerson=contactPerson, email=email)
+            mobile = form["mobile"]
+            datahandler.add_Team(name, group, contactPerson=contactPerson, mobile=mobile)
 
             return redirect(url_for('teams.manage'))
         else:
