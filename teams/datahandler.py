@@ -43,7 +43,7 @@ def add_Team(name, group, contactPerson=None, mobile=None):
         con = sqlite3.connect(db_file)
         cur = con.cursor()
         try:
-                cur.execute("INSERT INTO teams(name, group, contactPerson, mobile) VALUES (?,?,?)", (name, group, contactPerson, mobile))
+                cur.execute("INSERT INTO teams('name', 'group', 'contactPerson', 'mobile') VALUES (?,?,?,?)", (name, int(group), contactPerson, mobile))
         except Exception as e:
                 print(e)
         con.commit()
