@@ -4,9 +4,19 @@
     <div style="padding: 10px">
         <a style="margin: 20px" class="btn btn-large btn-info btn-lg" href="{{ url_for('cashRegister.items',team_name = 'Ohne Team', team_id=-1) }}">Ohne Team</a><br>
         {% for team in teams %}
-            <a style="margin: 20px" class="btn btn-large btn-primary btn-lg" href="{{ url_for('cashRegister.items',team_name = team['name'], team_id = team['id']) }}">
-                {{ team['name'] }}
-            </a>
+            {% if team['group'] == 1 %}
+                <a style="margin: 5px" class="btn btn-large btn-primary btn-lg" href="{{ url_for('cashRegister.items',team_name = team['name'], team_id = team['id']) }}">
+                    {{ team['name'] }}
+                </a>
+            {% elif team['group'] == 2 %}
+                <a style="margin: 5px; background-color: #E6007E; border-color: #B80065" class="btn btn-large btn-danger btn-lg" href="{{ url_for('cashRegister.items',team_name = team['name'], team_id = team['id']) }}">
+                    {{ team['name'] }}
+                </a>
+            {% else %}
+                <a style="margin: 5px" class="btn btn-large btn-secondary btn-lg" href="{{ url_for('cashRegister.items',team_name = team['name'], team_id = team['id']) }}">
+                    {{ team['name'] }}
+                </a>
+            {% endif %}
         {% endfor %}
     </div>
     <script>cashRegister_
