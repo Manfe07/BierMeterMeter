@@ -10,12 +10,14 @@ def init():
 
         #Create Table "teams"
         cur.execute('''
-            CREATE TABLE IF NOT EXISTS teams (
-                id INTEGER PRIMARY KEY,
-                name VARCHAR(100) UNIQUE NOT NULL,
-                contactPerson VARCHAR(300),
-                email VARCHAR(300)
-            );
+                CREATE TABLE IF NOT EXISTS "teams" (
+                    "id"	INTEGER NOT NULL,
+                    "name"	VARCHAR(100) NOT NULL UNIQUE,
+                    "group"	INTEGER NOT NULL DEFAULT 0,
+                    "contactPerson"	VARCHAR(300),
+                    "mobile"	VARCHAR(300),
+                    PRIMARY KEY("id")
+                );
         ''')
 
 def get_Teams():
@@ -28,19 +30,20 @@ def get_Teams():
                 list.append({
                         "id":row[0],
                         "name":row[1],
-                        "contactPerson":row[2],
-                        "email":row[3],
+                        "group":row[2],
+                        "contactPerson":row[3],
+                        "mobile":row[4],
                 })
 
         con.close()
         return list
 
 
-def add_Team(name, contactPerson=None, email=None):
+def add_Team(name, group, contactPerson=None, mobile=None):
         con = sqlite3.connect(db_file)
         cur = con.cursor()
         try:
-                cur.execute("INSERT INTO teams(name, contactPerson, email) VALUES (?,?,?)", (name, contactPerson, email))
+                cur.execute("INSERT INTO teams(name, group, contactPerson, mobile) VALUES (?,?,?)", (name, group, contactPerson, mobile))
         except Exception as e:
                 print(e)
         con.commit()
