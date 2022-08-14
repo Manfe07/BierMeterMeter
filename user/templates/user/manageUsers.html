@@ -24,21 +24,21 @@
                     </td>
                     <td class="table-content"><a>{{ user['last_login'] }}</a></td>
                     <td>
-                        <button class="btn btn-danger btn-block" onclick="deleteTeam({{ user['id'] }}, '{{ user['username'] }}')">Löschen</button>
+                        <button class="btn btn-danger btn-block" onclick="deleteUser({{ user['id'] }}, '{{ user['username'] }}')">Löschen</button>
                     </td>
                 </tr>
             {% endfor %}
         </table>
     </div>
     <script>
-        function deleteTeam(id, team){
-            if (confirm("⚠🚨 Willst du wirklich das Team \"" + team + "\" Löschen? 🚨⚠")) {
-                fetch("{{url_for('teams.deleteTeam')}}", {
+        function deleteUser(id, username){
+            if (confirm("⚠🚨 Willst du den Benutzer \"" + username + "\" Löschen? 🚨⚠")) {
+                fetch("{{url_for('user.deleteUser')}}", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({'id':id})
                 }).then(res => {
-                    alert("Team \"" + team + "\" wurde gelöscht")
+                    alert("Benutzer \"" + username + "\" wurde gelöscht")
                     console.log("Request complete! response:", res);
                     location.reload()
                 });
