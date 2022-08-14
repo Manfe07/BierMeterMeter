@@ -16,7 +16,7 @@ def init():
                 id INTEGER PRIMARY KEY,
                 username VARCHAR(100) UNIQUE,
                 password VARCHAR(200),
-                email VARCHAR(200) UNIQUE,
+                email VARCHAR(200),
                 permission INTEGER NOT NULL,
                 last_login TIMESTAMP
             );
@@ -92,6 +92,16 @@ def getUsers():
 
         con.close()
         return list
+
+
+def deleteUser(id):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+        cur.execute("DELETE FROM users WHERE id=?", (id,))
+
+        con.commit()
+        con.close()
+
 
 if __name__ == "__main__":
         init()
