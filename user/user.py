@@ -11,6 +11,11 @@ def addButtons(buttonList : dict):
         'class' : "btn btn-danger",
         'site' : 'user.add_user'
     })
+    buttonList['3'].append({
+        'text' : "Benutzer verwalten",
+        'class' : "btn btn-danger",
+        'site' : 'user.manageUsers'
+    })
     return buttonList
 
 @user.route('/login', methods=['POST', 'GET'])
@@ -59,5 +64,16 @@ def add_user():
                 return redirect(url_for('user.add_user'))
         elif request.method == 'GET':
             return render_template('user/addUser.html')
+    else:
+        return redirect(url_for('ranking'))
+
+
+@user.route('/manageUser', methods=['POST','GET'])
+def manageUsers():
+    if session.get("logged_in") and session.get("permission") >= 2:
+        if request.method == 'POST':
+            return redirect(url_for('user.manageUsers'))
+        elif request.method == 'GET':
+            return render_template('user/manageUsers.html',users = datahandler.getUsers())
     else:
         return redirect(url_for('ranking'))
