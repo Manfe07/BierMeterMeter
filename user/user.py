@@ -68,12 +68,22 @@ def add_user():
         return redirect(url_for('ranking'))
 
 
-@user.route('/manageUser', methods=['POST','GET'])
+@user.route('/manageUser', methods=['GET'])
 def manageUsers():
     if session.get("logged_in") and session.get("permission") >= 2:
-        if request.method == 'POST':
-            return redirect(url_for('user.manageUsers'))
-        elif request.method == 'GET':
-            return render_template('user/manageUsers.html',users = datahandler.getUsers())
+        return render_template('user/manageUsers.html',users = datahandler.getUsers())
     else:
         return redirect(url_for('ranking'))
+
+@user.route('/deleteUser', methods=['POST'])
+def deleteUser():
+    if session.get("logged_in") and session.get("permission") >= 2:
+        request_data = request.get_json()
+        if 'id' in request_data:
+            id = request_data["id"]
+            datahandler.deleteUser(id)
+
+        return redirect(url_for('user.manageUsers'))
+    else:
+        return redirect(url_for('user.login'))
+
