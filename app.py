@@ -9,6 +9,7 @@ import settings
 import datahandler
 import json
 
+from datetime import timedelta
 from pprint import pprint
 import logging
 
@@ -20,6 +21,7 @@ buttonList = info.addButtons(buttonList)
 buttonList = user.addButtons(buttonList)
 
 app = Flask(__name__)
+app.permanent_session_lifetime = timedelta(hours=6)
 datahandler.init()
 
 app.register_blueprint(cashRegister.cashRegister, url_prefix="/kasse")
