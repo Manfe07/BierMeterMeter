@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 import settings
 from passlib.hash import sha256_crypt
@@ -9,7 +10,6 @@ db_file = settings.db_file
 def init():
         con = sqlite3.connect(db_file)
         cur = con.cursor()
-
         #Create Table "Users"
         cur.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -17,7 +17,8 @@ def init():
                 username VARCHAR(100) UNIQUE,
                 password VARCHAR(200),
                 email VARCHAR(200) UNIQUE,
-                permission INTEGER NOT NULL
+                permission INTEGER NOT NULL,
+                last_login TIMESTAMP
             );
         ''')
 
@@ -50,11 +51,47 @@ def verify(username, password):
                 data = cur.execute("SELECT * FROM users WHERE username=?", (username,)).fetchone()
                 hash = data[2]
                 if sha256_crypt.verify(password, hash):
+                        updateLastLogin(username)
                         return True, data[4]
                 else:
                         return False, 0
         else:
                 return False, 0
+
+
+def updateLastLogin(username):
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        try:
+                now = datetime.datetime.now().timestamp()
+                data = cur.execute("UPDATE users SET last_login = ? WHERE username = ?",[now, username]).fetchall()
+                con.commit()
+        except Exception as e:
+                print(e)
+
+
+def getUsers():
+        con = sqlite3.connect(db_file)
+        cur = con.cursor()
+
+        list = []
+        result = cur.execute('SELECT * FROM users ORDER BY username ASC')
+        for row in result:
+                if row[5]:
+                        last_login = datetime.datetime.fromtimestamp(row[5]).strftime("%Y-%m-%d %H:%M:%S")
+                else:
+                        last_login = None
+                list.append({
+                        "id": row[0],
+                        "username": row[1],
+                        "email": row[3],
+                        "permission": row[4],
+                        "last_login": last_login,
+                })
+
+        con.close()
+        return list
 
 if __name__ == "__main__":
         init()
