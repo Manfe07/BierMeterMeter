@@ -10,6 +10,15 @@
                 <div class="control-group">
                     <input type="text" required class="login-field" value="" placeholder="Name" name="name">
                 </div>
+
+                <div class="control-group">
+                    <select name="group_id">
+                        {% for group in itemGroups %}
+                            <option value={{ group["id"] }}> {{ group["name"] }} </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <div class="control-group">
                     <input type="number" required class="login-field" value="" step="0.01" min="0.00" placeholder="Preis" name="price">
                 </div>
@@ -22,6 +31,7 @@
         <table class="table" style="width: auto">
             <tr class="table-header">
                 <th>ID</th>
+                <th>Gruppe</th>
                 <th>Artikel</th>
                 <th>Preis</th>
                 <th>Ersteller</th>
@@ -31,8 +41,9 @@
             {% for item in itemlist %}
                 <tr>
                     <td class="table-content">{{ item["id"] }}</td>
-                    <td class="table-content">{{ item["name"] }}</td>
-                    <td class="table-currency">{{ "{:,.2f}€".format( item.price) }}</td>
+                    <td class="table-content" style="background-color: {{ item['group']['color'] }}">{{ item['group']['name'] }}</td>
+                    <td class="table-content"><b>{{ item["name"] }}</b></td>
+                    <td class="table-currency"><b>{{ "{:,.2f}€".format( item.price) }}</b></td>
                     <td class="table-content">{{ item["editor"] }}</td>
                     <!-- <td class="table-content"><button class="btn-warning" onclick="deleteItem({{ item["id"] }})">Ändern</button></td> -->
                     <td class="table-content"><button class="btn-danger" onclick="deleteItem({{ item["id"] }}, '{{ item["name"] }}')">Löschen</button></td>
