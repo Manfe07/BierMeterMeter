@@ -8,10 +8,17 @@
                     <h1>Artikel hinzufügen</h1>
                 </div>
                 <div class="control-group">
+                    <label for="name">Name:</label>
                     <input type="text" required class="login-field" value="" placeholder="Name" name="name">
                 </div>
 
                 <div class="control-group">
+                    <label for="price">Preis:</label>
+                    <input type="number" required class="login-field" value="" step="0.01" min="0.00" placeholder="Preis" name="price">
+                </div>
+
+                    <div class="control-group">
+                    <label for="group_id">Artikel Gruppe:</label>
                     <select name="group_id">
                         {% for group in itemGroups %}
                             <option value={{ group["id"] }}> {{ group["name"] }} </option>
@@ -19,9 +26,7 @@
                     </select>
                 </div>
 
-                <div class="control-group">
-                    <input type="number" required class="login-field" value="" step="0.01" min="0.00" placeholder="Preis" name="price">
-                </div>
+
                 <br>
                 <input type="submit" value="Erstellen" class="btn btn-primary btn-large btn-block">
             </div>

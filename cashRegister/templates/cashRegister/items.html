@@ -7,16 +7,22 @@
         <h2>🛒 {{ team.team_name }} 🍻</h2>
     </div>
     <div class="itemblock">
-        <table>
-            <tbody>
-                {% for item in itemlist %}
-                    <tr>
-                        <td><button class="btn btn-large btn-primary btn-lg" style="float:right;" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)">+1 <b>{{ item.name }}</b><br> {{ "{:,.2f}€".format( item.price ) }}</button></td>
-                        <td><button class="btn btn-large btn-warning btn-lg" onclick="addItem('{{ item.name }}', {{ item.price }}, 5)">+5 <b>{{ item.name }}</b><br> {{ "{:,.2f}€".format( item.price * 5) }}</button></td>
-                    </tr>
+        {% for group in itemlist %}
+            <div class="divGroup">
+                <table style="padding: 0px">
+                {% for item in itemlist[group]["items"] %}
+                    <td style="padding: 0px">
+                        <button class="btn btn-large btn-lg item-btn " style="float:right; background-color:{{ item.group.color }}" onclick="addItem('{{ item.name }}', {{ item.price }}, 1)">
+                            <b>{{ item.name }}</b><br>
+                            {{ "{:,.2f}€".format( item.price) }}
+                        </button>
+                    </td>
                 {% endfor %}
-            </tbody>
-        </table>
+                </table>
+            </div>
+            <br style="clear: both;">
+        {% endfor %}
+
     </div>
     <div class="itemblock">
         <table>
@@ -129,6 +135,15 @@
     .itemblock{
         margin: 10px;
         padding: 10px;
+    }
+    .item-btn{
+        alignment: left;
+        border: solid black 2px;
+        margin-right: 5px
+    }
+    .divGroup{
+        alignment: left ;
+        align-content: left;
     }
     .columnAmount{
         text-align: right;
