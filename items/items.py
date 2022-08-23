@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, Flask, request, jsonify, redirect, url_for, session, flash
 import items.datahandler as datahandler
+from pprint import pprint
 
 datahandler.init()
 
@@ -20,7 +21,7 @@ items = Blueprint('items', __name__,
 @items.route('/verwalten', methods=['GET'])
 def manage():
     if session.get("logged_in") and session.get("permission") >= 2:
-        return render_template("items/manage.html", itemlist = datahandler.get_Items())
+        return render_template("items/manage.html", itemlist = datahandler.get_Items(), itemGroups = datahandler.getGroups())
     else:
         return redirect(url_for('user.login'))
 
@@ -32,11 +33,15 @@ def addItem():
             name = form["name"]
             price = float(form["price"])
             editor = session.get("user_name")
-            datahandler.addItem(name, price=price, editor=editor)
+            group_id = int(form["group_id"])
+
+
+            datahandler.addItem(name, price=price, editor=editor, group_id = group_id)
 
         return redirect(url_for('items.manage'))
     else:
         return redirect(url_for('user.login'))
+
 
 @items.route('/deleteItem', methods=['POST'])
 def deleteItem():
