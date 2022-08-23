@@ -32,34 +32,68 @@ def init():
         con.commit()
         con.close()
 
-def get_Items():
+def get_Items(asGroup = False):
         con = sqlite3.connect(db_file)
         cur = con.cursor()
 
         groups = getGroups(asDic=True)
 
         list = []
-        result = cur.execute('SELECT * FROM items ORDER BY name ASC')
-        try:
+        result = cur.execute('SELECT * FROM items ORDER BY group_id, name ASC')
+
+        if asGroup:
+                dic = {}
+                for group in groups:
+                        dic[groups[group]["id"]] = groups[group]
+                        dic[groups[group]["id"]]["items"] = []
+
                 for row in result:
+                        print(row)
                         if row[3]:
                                 group_id = row[3]
                         else:
                                 group_id = 1
 
-                        list.append({
+                        id = row[0]
+                        name = row[1]
+                        price = float(row[2])
+                        group = groups[group_id]
+                        editor = row[4]
+
+                        dic[group_id]["items"].append({
                                 "id" : row[0],
                                 "name" : row[1],
                                 "price" : float(row[2]),
                                 "group" : groups[group_id],
                                 "editor" : row[4]
                         })
-        except Exception as e:
-                print(e)
 
-        con.close()
-        pprint(list)
-        return list
+                con.close()
+                pprint(dic)
+                return dic
+
+
+        else:
+                try:
+                        for row in result:
+                                if row[3]:
+                                        group_id = row[3]
+                                else:
+                                        group_id = 1
+
+                                list.append({
+                                        "id" : row[0],
+                                        "name" : row[1],
+                                        "price" : float(row[2]),
+                                        "group" : groups[group_id],
+                                        "editor" : row[4]
+                                })
+                except Exception as e:
+                        print(e)
+
+                con.close()
+                pprint(list)
+                return list
 
 
 def addItem(name, price=None, editor=None, group_id=1):
@@ -74,12 +108,12 @@ def addItem(name, price=None, editor=None, group_id=1):
 
 
 def getGroups(asDic = False):
-        con = sqlite3.connect(db_file)
-        cur = con.cursor()
-
-        result = cur.execute('SELECT * FROM item_groups ORDER BY name ASC')
-
         if asDic:
+                con = sqlite3.connect(db_file)
+                cur = con.cursor()
+
+                result = cur.execute('SELECT * FROM item_groups ORDER BY id ASC')
+
                 dic = {}
                 try:
                         for row in result:
@@ -101,6 +135,11 @@ def getGroups(asDic = False):
                 return dic
 
         else:
+                con = sqlite3.connect(db_file)
+                cur = con.cursor()
+
+                result = cur.execute('SELECT * FROM item_groups ORDER BY name ASC')
+
                 list = []
                 try:
                         for row in result:
