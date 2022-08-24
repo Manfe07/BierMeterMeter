@@ -50,7 +50,7 @@ def items():
                 'team_name' : "Ohne Mannschaft",
                 'team_id' : None
             }
-        return render_template('cashRegister/items.html', team=team, itemlist = itemlist.get_Items())
+        return render_template('cashRegister/items.html', team=team, itemlist = itemlist.get_Items(asGroup=True))
     else:
         return redirect(url_for('user.login'))
 
