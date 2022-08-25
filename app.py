@@ -21,7 +21,7 @@ buttonList = info.addButtons(buttonList)
 buttonList = user.addButtons(buttonList)
 
 app = Flask(__name__)
-app.permanent_session_lifetime = timedelta(hours=6)
+app.permanent_session_lifetime = settings.session_lifetime
 datahandler.init()
 
 app.register_blueprint(cashRegister.cashRegister, url_prefix="/kasse")
