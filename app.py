@@ -21,7 +21,7 @@ buttonList = info.addButtons(buttonList)
 buttonList = user.addButtons(buttonList)
 
 app = Flask(__name__)
-app.permanent_session_lifetime = timedelta(hours=6)
+app.permanent_session_lifetime = settings.session_lifetime
 datahandler.init()
 
 app.register_blueprint(cashRegister.cashRegister, url_prefix="/kasse")
@@ -38,11 +38,17 @@ app.register_blueprint(user.user, url_prefix="/user")
 @app.route('/')
 def ranking():  # put application's code here
     ranking_list = cashRegister.datahandler.get_List_By_Date()
-    return render_template('ranking.html', ranking_list = ranking_list)
+    if settings.hideRanking:
+        return render_template('secret.html')
+    else:
+        return render_template('ranking.html', ranking_list = ranking_list)
 
 @app.route('/tv')
 def ranking_TV():  # put application's code here
-    return render_template('ranking_tv.html')
+    if settings.hideRanking:
+        return render_template('secret.html')
+    else:
+        return render_template('ranking_tv.html')
 
 
 @app.route('/admin')

@@ -3,7 +3,7 @@
 {% block content %}
     <div style="overflow-x:auto; padding: 10px">
         {% for team in bills %}
-            <div class="team-container">
+            <div class="team-container" id="{{ team }}">
                 <h3 style="padding-left: 5px">{{ team }}</h3>
                 <table style=" border: solid black;">
                     <tbody>
@@ -23,7 +23,7 @@
                                     <td class="basic-row" style="text-align: right">{{ "{:,.2f}€".format(item.sum) }}</td>
                                     {% if total.update({"cash": item.sum + total.cash }) %} {% endif %}
                                 {% else %}
-                                    <td class="basic-row credit" style="text-align: right">{{ "{:,.2f}€".format(item.sum) }}</td>
+                                    <td class="basic-row credit" style="text-align: right; color:red">{{ "{:,.2f}€".format(item.sum) }}</td>
                                     <td class="basic-row" style="text-align: right"></td>
                                     {% if total.update({"credit": item.sum + total.credit }) %} {% endif %}
                                 {% endif %}
@@ -31,15 +31,26 @@
                         {% endfor %}
                         <tr style="padding: 5px; margin: 5px; border: solid">
                             <td class="basic-row" style="text-align: right;" colspan="2"><b>Total: </b></td>
-                            <td class="basic-row credit" style="text-align: right"><b>{{ "{:,.2f}€".format(total.credit) }}</b></td>
+                            <td class="basic-row credit" style="text-align: right; color:red"><b>{{ "{:,.2f}€".format(total.credit) }}</b></td>
                             <td class="basic-row" style="text-align: right"><b>{{ "{:,.2f}€".format(total.cash) }}</b></td>
                         </tr>
                     </tbody>
                 </table>
+	    </div>	
+            <div class="team-container">
+                <button onclick="doPrint('{{ team }}')">Print</button>
             </div>
         {% endfor %}
     </div>
     <script>
+    function doPrint(targetDiv){
+        console.log(targetDiv);
+    	var printContents = document.getElementById(targetDiv).innerHTML;
+    	var originalContents = document.body.innerHTML;
+    	document.body.innerHTML = printContents;
+    	window.print();
+    	document.body.innerHTML = originalContents;
+    }
     </script>
 {% endblock %}{% block style %}
 <style>
