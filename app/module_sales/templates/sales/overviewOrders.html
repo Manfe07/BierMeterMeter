@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}Käufe{% endblock %}
+
+{% block content %}
+
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Käufe</h1>
+        </div>
+        <div class='card-body'>
+            <p>
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Datum</th>
+                        <th scope="col">Team</th>
+                        <th scope="col">Artikel</th>
+                        <th scope="col">Summe</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order, team in orders %}
+                    <tr class="orderRow" id="{{order['id']}}">
+                        <td class="id">{{order['id']}}</td>
+                        <td class="timestamp">{{order['created_at']}}</td>
+                        <td class="team"><strong>{{team['name']}}</strong></td>
+                        <td class="team"><strong>{{order['itemCount']}}</strong></td>
+                        <td class="sum"><strong>{{'%0.2f'| format(order['sum']|float)}} €</strong></td>
+                        <td class="buttons">
+                            <button type="button" class="btn btn-warning">Edit</button>
+                            <button type="button" class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}         
+                </tbody>       
+            </p>
+        </div>
+    </div>
+    <div class='card' id="itemEditDiv" style="visibility:collapse;">
+        <div class='card-header'>
+            <h1 id="orderEditTitel">Kauf Bearbeiten</h1>
+        </div>
+        <div class='card-body'>
+        </div>
+        
+    </div>
+
+</div>
+
+<style>
+    a{
+        color: inherit; /* blue colors for links too */
+        text-decoration: inherit; /* no underline */
+    }
+</style>
+{% endblock %}

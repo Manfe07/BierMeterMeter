@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Admin - Login{% endblock %}
+
+{% block content %}
+
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Login</h1>
+        </div>
+        <div class='card-body'>
+            <form action="{{ url_for('users.login') }}" method="POST">
+                <div class="login">
+                    <div class="login-screen">
+                        <div class="login-form">
+                            <div class="control-group">
+                                <input type="text" class="login-field" value="" placeholder="username" name="username">
+                            </div>
+                            <div class="control-group">
+                                <input type="password" class="login-field" value="" placeholder="password"
+                                    name="password">
+                            </div><br>
+                            <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block style %}
+{% endblock %}

@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  stopwatch:
+    build: .
+    restart: unless-stopped
+    volumes:    
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - ./data:/data
+      - ./config:/config
+      - ./logs:/logs
+    #ports:
+    #  - 8000:8000
+    #command: gunicorn --worker-class eventlet -w 1 -b :8000 app:app --access-logfile ./logs/log.txt --log-level debug 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stopwatch.rule=Host(`stopwatch.domain.de`)"
+      - "traefik.http.routers.stopwatch.entrypoints=websecure"
+      - "traefik.http.services.stopwatch.loadbalancer.server.port=8000"
+      - "traefik.http.routers.stopwatch.service=stopwatch"
+      - "traefik.http.routers.stopwatch.tls.certresolver=production"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

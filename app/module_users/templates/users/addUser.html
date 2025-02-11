@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Benutzerverwaltung{% endblock %}
+{% block content %}
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Benutzer erstellen</h1>
+        </div>
+        <div class='card-body'>
+            <form action="{{ url_for('user.add_user') }}" method="POST">
+                <div class="login-screen">
+                    <div class="control-group">
+                        <a>Benutzername*</a><br>
+                        <input type="text" class="login-field" value="" required placeholder="username" name="username">
+                    </div>
+                    <div class="control-group">
+                        <a>Passwort*</a><br>
+                        <input type="password" class="login-field" value="" required placeholder="password"
+                            name="password">
+                    </div>
+                    <div class="control-group">
+                        <a>email</a><br>
+                        <input type="email" class="login-field" value="" placeholder="email" name="email">
+                    </div>
+                    <div class="control-group">
+                        <a>Berechtigung*</a><br>
+                        <input type="number" class="login-field" value="1" required step="1" min="1" max="3"
+                            placeholder="" name="permission">
+
+                    </div><br>
+                    <input type="submit" value="Create" class="btn btn-primary btn-large btn-block">
+                </div>
+                <a>
+                    <b>Berechtigungen:</b><br>
+                    <a>1: Kellner</a><br>
+                    <a>2: Verwaltung</a><br>
+                    <a>3: Admin</a><br>
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block style %}
+{% endblock %}

@@ -1,0 +1,443 @@
+{% extends "layout.html" %}
+
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+
+
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Team Gruppen</h1>
+        </div>
+        <div class='card-body'>
+            <p>
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Beschreibung</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Farbe</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in teamGroups %}
+                    <tr class="groupRow" id="{{group['id']}}">
+                        <td class="id">{{group['id']}}</td>
+                        <td class="name"><strong>{{group['name']}}</strong></td>
+                        <td class="description"><strong>{{group['description']}}</strong></td>
+                        <td class="state">
+                            {% if group['state'] == 0 %}
+                                Unklar
+                            {% elif group['state'] == 1 %}
+                                Aktiv
+                            {% elif group['state'] == 2 %}
+                                Inaktiv
+                            {% else %}
+                                UNBEKANNT ({{group['state']}})
+                            {% endif %}
+                        </td>
+                        <td style="background-color: {{group['color']}};">{{group['color']}}</td>
+                        <td class="buttons">
+                            <button type="button" class="btn btn-warning" onClick="editGroup({{group['id']}})">Edit</button>
+                            <button type="button" class="btn btn-danger" onClick="deleteGroup({{group['id']}})">Delete</button>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="buttons">
+                            <button type="button" class="btn btn-success" onClick="addGroup()">New</button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            </p>
+        </div>
+    </div>
+    <div class='card' id="groupEditDiv" style="visibility:collapse;">
+        <div class='card-header'>
+            <h1 id="groupEditTitel">Gruppe erstellen</h1>
+        </div>
+        <div class="card-body">
+            <div class="buttonGrid">
+                <div class="teamButton dark" >
+                    <a><b>Test Team</b></a>
+                </div>
+                <div class="teamButton light">
+                    <a><b>Test Team</b></a>
+                </div>
+            </div><br>
+        </div>
+        <div class='card-body'>
+            <form action="{{ url_for('teams.updateTeamGroup') }}" onsubmit="clearPage()" method="POST">
+                <div class="itemGroupForm">
+                    <input type="hidden" id="updateGroupId" name="id" value="-1">
+                    <div class="control-group">
+                        <a>Name*</a><br>
+                        <input type="text" id="updateGroupName" class="login-field" value="" required placeholder="Gruppenname" name="name">
+                    </div>
+                    <div class="control-group">
+                        <a>Beschreibung</a><br>
+                        <input type="text" id="updateGroupDescription" class="login-field" value="" required placeholder="Gruppenbeschreibung" name="description">
+                    </div>
+                    <div class="control-group">
+                        <a>Farbe</a><br>
+                        <input type="color" id="updateGroupColor" name="color" value="#c9110e" />
+                    </div>
+                    <div class="control-group">
+                        <a>Status*</a><br>
+                        <select id="updateGroupState" name="state">
+                            <option value=0>Unklar</option>
+                            <option value=1>Aktiv</option>
+                            <option value=2>Inaktiv</option>
+                        </select>
+                    </div><br>
+                    <input type="submit" id="updateGroupSubmit" value="Create" class="btn btn-primary btn-large btn-block">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Teams</h1>
+        </div>
+        <div class='card-body'>
+            <p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Name Kurz</th>
+                        <th scope="col">Kontakt</th>
+                        <th scope="col">Telefon</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in teamGroups %}
+                    {% if group.teams|length > 0 %}
+                        <td style="background-color: {{group['color']}};"></td>
+                        <td style="background-color: {{group['color']}};" class="name"><strong>{{group['name']}}</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        {% for team in group.teams %}
+                        <tr class="team_row" id="{{team['id']}}">
+                            <td class="id" style="background-color: {{group['color']}};">{{team['id']}}</td>
+                            <td class="name"><strong>{{team['name']}}</strong></td>
+                            <td class="nameShort"><strong>{{team['nameShort']}}</strong></td>
+                            <td class="contact">{{team['contact']}}</td>
+                            <td class="phoneNumber">
+                                <a href="tel:{{team['phoneNumber']}}">{{team['phoneNumber']}}</a>
+                            </td>
+                            <td class="state">
+                                {% if team['state'] == 0 %}
+                                    Unklar
+                                {% elif team['state'] == 1 %}
+                                    Aktiv
+                                {% elif team['state'] == 2 %}
+                                    Inaktiv
+                                {% else %}
+                                    UNBEKANNT ({{team['state']}})
+                                {% endif %}
+                            </td>
+                            <td class="buttons">
+                                <button type="button" class="btn btn-warning" onClick="editTeam({{team['id']}})">Edit</button>
+                                <button type="button" class="btn btn-danger" onClick="deleteTeam({{team['id']}})">Delete</button>
+                            </td>
+                        </tr>
+                       
+                        {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    <tr class="team_row">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="buttons">
+                            <button type="button" class="btn btn-success" onClick="addTeam()">New</button>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            </p>
+        </div>
+    </div>
+    <div class='card' id="teamEditDiv" style="visibility:collapse;">
+        <div class='card-header'>
+            <h1 id="teamEditTitel">Team erstellen</h1>
+        </div>
+        <div class='card-body'>
+            <form action="{{ url_for('teams.updateTeam') }}" method="POST">
+                <div class="login-screen">                    
+                    <input type="hidden" id="updateTeamId" name="id" value="0">
+                    <div class="control-group">
+                        <a>Teamname lang*</a><br>
+                        <input type="text" class="login-field" value="" required placeholder="Teamname lang" id="editTeamNameLong" name="name_long">
+                    </div>
+                    <div class="control-group">
+                        <a>Teamname kurz*</a><br>
+                        <input type="text" class="login-field" value="" required placeholder="Teamname kurz" id="editTeamNameShort" name="name_short">
+                    </div>
+                    <div class="control-group">
+                        <a>Gruppe</a><br>
+                        <select id="updateTeamGroupId" name="groupId">
+                            {% for group in teamGroups %}
+                                <option value={{group['id']}} style="background-color: {{group['color']}};">{{group['name']}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <a>Kontakt Person</a><br>
+                        <input type="text" class="login-field" value="" placeholder="Kontaktperson" id="editTeamContact" name="contact">
+                    </div>
+                    <div class="control-group">
+                        <a>Telefon Nummer</a><br>
+                        <input type="text" class="login-field" value="" placeholder="0123 4567890" id="editTeamPhone" name="phone">
+                    </div>
+                    
+                    <div class="control-group">
+                        <a>Status*</a><br>
+                        <select id="editTeamState" name="state">
+                            <option value=0>Unklar</option>
+                            <option value=1>Aktiv</option>
+                            <option value=2>Inaktiv</option>
+                        </select>
+                    </div>
+                    <input type="submit" id="updateTeamSubmit" value="Create" class="btn btn-primary btn-large btn-block">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>    
+a{
+    color: inherit; /* blue colors for links too */
+    text-decoration: inherit; /* no underline */
+}
+.buttonGrid{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    text-align: center;
+    align-content: center;
+    width: 50%;
+}
+.teamButton{
+    border: 1px solid black;
+    text-align: center;
+    align-content: center;
+    background-color: #c9110e;
+}
+.teamButton.light{
+    color: black;
+}
+.teamButton.dark{
+    color: white;
+}
+
+</style>
+<script>
+
+    var teamsData = {};
+    var groupsData = {};
+    getTeams();
+    getGroups();
+
+    function getTeams(){
+        fetch('{{ url_for("teams.getTeams") }}', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            teamsData = json;
+            console.debug(teamsData);
+        });
+    }
+
+    function getGroups(){
+        fetch('{{ url_for("teams.getGroups") }}', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            groupsData = json;
+            console.debug(groupsData);
+        });
+    }
+
+
+    function addTeam(){
+        $("#teamEditDiv").css('visibility', 'visible');
+        $("#teamEditTitel").text("Team erstellen");
+        $("#updateTeamSubmit").val("Erstellen");
+
+        
+        $("#updateTeamId").val(0);
+        $("#editTeamNameLong").val("");
+        $("#editTeamNameShort").val("");
+        $("#editTeamContact").val("");
+        $("#editTeamPhone").val("");
+        $("#editTeamState").val(1);
+
+        $('html, body').scrollTop($("#teamEditDiv").offset().top);
+    }
+
+    function editTeam(id){
+        let teamData = teamsData[id];
+        $("#teamEditDiv").css('visibility', 'visible');
+        $("#teamEditTitel").text("Team ändern");
+        $("#updateTeamSubmit").val("Ändern");
+        
+        var nameLong = teamData["name"];
+        var nameShort = teamData["nameShort"];
+        var contact = teamData["contact"];
+        var phone = teamData["phone"];
+        var state = teamData["state"];
+        var groupId = teamData["groupId"];
+        
+        $("#updateTeamId").val(id);
+        $("#editTeamNameLong").val(nameLong);
+        $("#editTeamNameShort").val(nameShort);
+        $("#editTeamContact").val(contact);
+        $("#editTeamPhone").val(phone);
+        $("#editTeamState").val(state);
+
+
+        $('html, body').scrollTop($("#teamEditDiv").offset().top);
+    }
+
+    function deleteTeam(id){
+        console.log("Delete Team: " + id);
+        console.log(teamsData);
+        console.log(teamsData[id])
+        fetch('{{ url_for("teams.deleteTeam") }}', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'id' : id})
+        })
+        .then((response) => {
+            console.log(response);
+            location.reload();    
+        }
+        );
+    }
+
+
+function addGroup(){
+    $("#groupEditDiv").css('visibility', 'visible');
+    $("#groupEditTitel").text("Gruppe erstellen");
+    $("#updateGroupSubmit").val("Erstellen");
+
+
+    $("#updateGroupId").val(0);
+    $("#updateGroupName").val("");
+    $("#updateGroupDescription").val("");
+    $("#updateGroupColor").val("#00437d");
+    $("#updateGroupState").val(1);
+
+    $(".teamButton").css("background-color", "#00437d");
+    $('html, body').scrollTop($("#groupEditDiv").offset().top);
+}
+
+function editGroup(id){
+    let groupData = groupsData[id];
+    console.debug(groupData);
+    
+    $("#groupEditDiv").css('visibility', 'visible');
+    $("#groupEditTitel").text("Gruppe bearbeiten");
+    $("#updateGroupSubmit").val("Ändern");
+    
+    var name = groupData["name"];
+    var description = groupData["description"];
+    var color = groupData["color"];
+    var state = groupData["state"];
+
+    $("#updateGroupId").val(id);
+    $("#updateGroupName").val(name);
+    $("#updateGroupDescription").val(description);
+    $("#updateGroupColor").val(color);
+    $("#updateGroupState").val(state);
+    
+    $(".teamButton").css("background-color", color);
+    $('html, body').scrollTop($("#groupEditDiv").offset().top);
+}
+
+
+function deleteGroup(id){
+    console.log("Delete TeamGroup: " + id);
+    console.log(teamsData);
+    console.log(teamsData[id])
+    fetch('{{ url_for("teams.deleteTeamGroup") }}', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'id' : id})
+    })
+    .then((response) => {
+        console.log(response);
+        location.reload();    
+    }
+    );
+}
+
+
+// Preview Group
+$("input, select").change(function(){
+    let p1 = $(this).parent().parent();
+
+    if(p1.hasClass("itemGroupForm")){
+        let color = $("#updateGroupColor").val();
+        $(".teamButton").css("background-color", color);
+
+        console.debug("GroupForm");
+        console.debug(p1);
+        console.debug(this);
+    }
+});
+
+
+// hide Forms
+function clearPage(){
+    $("#TeamEditDiv").css('visibility', 'collapse');
+}
+
+</script>
+{% endblock %}

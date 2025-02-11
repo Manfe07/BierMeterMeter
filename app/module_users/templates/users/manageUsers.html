@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+{% block title %}Benutzerverwaltung{% endblock %}
+{% block content %}
+
+
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Benutzer Verwalten</h1>
+        </div>
+        <div class='card-body'>
+            <table class="table" style="width: auto">
+                <tr class="table-header">
+                    <th>ID</th>
+                    <th>Benutzername</th>
+                    <th>Rechte</th>
+                    <th>Email</th>
+                    <th>Last Login</th>
+                    <th></th>
+                </tr>
+                {% for user in users %}
+                    <tr>
+                        <td><a>{{ user['id'] }}</a></td>
+                        <td class="table-content"><a>{{ user['username'] }}</a></td>
+                        <td class="table-content"><a>
+                            {% if user['permission'] == 1 %}
+                            Bediener
+                            {% elif user['permission'] == 2 %}
+                            Verwaltung
+                            {% elif user['permission'] == 3 %}
+                            Admin
+                            {% else %}
+                            UNBEKANNT
+                            {% endif %} 
+                        </a></td>
+                        <td class="table-content">
+                            {% if user['email'] %}
+                                <a>{{ user['email'] }}</a>
+                            {% else %}
+                                <a>na</a>
+                            {% endif %}
+                        </td>
+                        <td class="table-content"><a>{{ user['last_login'] }}</a></td>
+                        <td>
+                            <button class="btn btn-danger btn-block" onclick="deleteUser({{ user['id'] }}, '{{ user['username'] }}')">Löschen</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Benutzer erstellen</h1>
+        </div>
+        <div class='card-body'>
+            <form action="{{ url_for('users.add_user') }}" method="POST">
+                <div class="login-screen">
+                    <div class="control-group">
+                        <a>Benutzername*</a><br>
+                        <input type="text" class="login-field" value="" required placeholder="username" name="username">
+                    </div>
+                    <div class="control-group">
+                        <a>Passwort*</a><br>
+                        <input type="password" class="login-field" value="" required placeholder="password"
+                            name="password">
+                    </div>
+                    <div class="control-group">
+                        <a>email</a><br>
+                        <input type="email" class="login-field" value="" placeholder="email" name="email">
+                    </div>
+                    <div class="control-group">
+                        <a>Berechtigung*</a><br>
+                        <select id="permission" name="permission">
+                            <option value=1>Bediener</option>
+                            <option value=2>Verwaltung</option>
+                            <option value=3>Admin</option>
+                        </select>
+                    </div><br>
+                    <input type="submit" value="Create" class="btn btn-primary btn-large btn-block">
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<script>
+    function deleteUser(id, username){
+        if (confirm("⚠🚨 Willst du den Benutzer \"" + username + "\" Löschen? 🚨⚠")) {
+            fetch("{{url_for('users.deleteUser')}}", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({'id':id})
+            }).then(res => {
+                alert("Benutzer \"" + username + "\" wurde gelöscht")
+                console.log("Request complete! response:", res);
+                location.reload()
+            });
+        }
+    }
+</script>
+{% endblock %}
+{% block style %}
+    <style>
+        .table-content{
+            text-align: left;
+            vertical-align: center;
+            white-space: nowrap;
+            padding-left: 5px;
+        }
+        .table-currency{
+            text-align: right;
+            vertical-align: center;
+            white-space: nowrap;
+            padding-left: 5px;
+        }
+    </style>
+{% endblock %}
