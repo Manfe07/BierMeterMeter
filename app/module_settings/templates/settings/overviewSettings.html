@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %}Einstellungen{% endblock %}
+
+{% block content %}
+
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Einstellungen</h1>
+        </div>
+        <div class='card-body'>
+            <p>
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Wert</th>
+                        <th scope="col">Permission</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for setting in settings %}
+                    <tr class="SettingRow" id="{{setting['id']}}">
+                        <form action="{{ url_for('settings.updateSetting') }}" method="POST">
+                            <input type="hidden" id="SettingName" name="name" value="{{setting['name']}}">
+                            <input type="hidden" id="SettingId" name="id" value="{{setting['id']}}">
+
+                            <td class="id">{{setting['id']}}</td>
+                            <td class="name">
+                                {{setting['name']}}
+                            </td>
+                            <td class="value">
+                                <input type="text" id="SettingValue" class="field" value="{{setting['value']}}" required placeholder="Name" name="value">
+                                {{setting['value']}}
+                            </td>
+                            <td class="permission">{{setting['permission']}}</td>
+                            <td class="buttons">
+                                <input type="submit" id="updateSettingSubmit" value="Update" class="btn btn-primary btn-large btn-block">
+                            </td>
+                        </form>
+                    </tr>
+                    {% endfor %}         
+                </tbody>       
+            </p>
+        </div>
+    </div>
+    <div class='card' id="EditDiv" style="visibility:collapse;">
+        <div class='card-header'>
+            <h1 id="groupEditTitel">Einstellung Bearbeiten</h1>
+        </div>
+        <div class='card-body'>
+            <form action="{{ url_for('settings.updateSetting') }}" onsubmit="clearPage()" method="POST">
+                <div class="itemGroupForm">
+                    <input type="hidden" id="SettingId" name="id" value="-1">
+                    <div class="control-group">
+                        <a>Name</a><br>
+                        <input type="text" id="SettingName" class="field" value="" required placeholder="Name" name="name">
+                    </div>
+                    <div class="control-group">
+                        <a>Wert</a><br>
+                        <input type="text" id="SettingValue" class="field" value="" required placeholder="Name" name="value">
+                    </div><br>
+                    <input type="submit" id="updateSettingSubmit" value="Create" class="btn btn-primary btn-large btn-block">
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+</script>
+
+
+<style>
+    a{
+        color: inherit; /* blue colors for links too */
+        text-decoration: inherit; /* no underline */
+    }
+</style>
+{% endblock %}
