@@ -1,10 +1,69 @@
 {% extends "layout.html" %}
 {% block content%}
 
+<div class='container'>
+    <div class='card'>
+        <div class='card-header'>
+            <h1>Ranking</h1>
+        </div>
+        <div class='card-body'>
+            <table id="rankingTable">
+            </table>            
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}
 <script>
+    data = {}
+
+    function getData() {
+        fetch('{{ url_for("getData") }}', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                data = json;
+                console.debug(data);
+
+                let tableRef = document.getElementById("rankingTable");
+                tableRef.innerHTML = "";
+
+                if(data.indexShowTable){
+                    for (team  in data.teams) {
+                        console.log(team);
+                        console.log(data.teams[team]);
+                        //let blankRow = tableRef.insertRow(-1);
+                        //let blankCell = blankRow.insertCell(0);
+                        //blankCell.innerHTML = ' ';
+                        let newRow = tableRef.insertRow(-1);
+                        let nameCell = newRow.insertCell(0);
+                        let amountCell = newRow.insertCell(1);
+                        let bierCell = newRow.insertCell(2);
+                        nameCell.setAttribute('class', 'rankingColumnTeam');
+                        amountCell.setAttribute('class', 'rankingColumnAmount');
+                        bierCell.setAttribute('class', 'rankingColumnBier');
+                        nameCell.innerHTML = "<strong>" + data.teams[team].team + "</strong>";                        
+                        amountCell.innerHTML = data.teams[team].amount;                    
+                        for(let i = 1; i <= data.teams[team].amount; i++){
+                            bierCell.innerHTML += "🍺";
+                        }
+                    }
+                }
+                else{
+                    tableRef.innerHTML = "<h2>Geheim</h2>";
+                    console.debug(false);
+                }
+            });
+    }
+
+    getData();
 </script>
 
 {% endblock %}
