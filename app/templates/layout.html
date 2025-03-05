@@ -57,6 +57,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('sales.overviewOrders') }}">Käufe</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('teams.overview') }}">Teams</a></li>
                             {% if session['permission'] >= 3 %}
+                            <li><a class="dropdown-item" href="{{ url_for('settings.overviewSettings') }}">Einstellungen</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('users.manageUsers') }}">Benutzer</a></li>
                             {% endif %}
                         </ul>
