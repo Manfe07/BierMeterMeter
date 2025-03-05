@@ -8,6 +8,7 @@ logs/app.log
 logs/log.txt
 docker-compose.yml
 .env/
+.venv/
 *.db
 logs/
 test.ipynb
