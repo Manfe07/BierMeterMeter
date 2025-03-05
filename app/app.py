@@ -1,12 +1,12 @@
+from flask import Flask
 from flask import Flask, send_file, render_template, redirect, jsonify
 from prometheus_flask_exporter import PrometheusMetrics
 from flask_socketio import SocketIO, send, emit
 from flask_migrate import Migrate
-from sqlalchemy import func, text
-from tools import * 
+#from tools import * 
 
 
-from database import db
+from database import db, socketio
 import logging
 
 import datetime
@@ -28,106 +28,51 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 
-
-app = Flask(__name__) 
-
-metrics = PrometheusMetrics(app)
-metrics.info('app_info', 'Application info', version='1.0.3')
-
-app.config['SECRET_KEY'] = config['Flask']['SECRET_KEY']
-socketio = SocketIO(app, cors_allowed_origins='*')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = config['Flask']['SQLALCHEMY_DATABASE_URI']
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['DEBUG'] = True
-
-
-with app.app_context():
-
-    import module_users.users as users
-    from module_teams import teams_Blueprint
-    from module_sales import sales_Blueprint
-    import module_settings
-    import module_sales
-    import module_teams
-
-    app.register_blueprint(users.users_Blueprint, url_prefix="/users")
-    app.register_blueprint(teams_Blueprint, url_prefix="/teams")
-    app.register_blueprint(sales_Blueprint, url_prefix="/sales")
-    app.register_blueprint(module_settings.blueprint, url_prefix="/settings")
-
-    db.init_app(app)
-    db.create_all()
-    users.init()
-    db.session.commit()
-
-    # Migration for sqlalchemy
-    MIGRATION_DIR = os.path.join('data', 'migrations')  
-    migrate = Migrate(app, db, directory=MIGRATION_DIR)
-
-@app.route('/',methods = ['GET'])
-def index():
-    return render_template('index.html')
-
-
-@app.route('/getData',methods = ['GET'])
-def getData():
-    data = {
-        'indexShowTable': False,
-        'teams':[]
-    }
-    #
-    indexShowTable = module_settings.models.getSettingElseCreate("indexShowTable",True,permission=2)
+def create_app(debug=False):
+    """Create an application."""
+    app = Flask(__name__)
+    app.debug = debug
     
 
-    # Get Teams as list, get add names in ranking
-    Team = module_teams.models.Team
-    teams = db.session.query(Team)
-    teamsList = {}
-    for team in teams:
-        teamsList[team.id] = team.name
 
-    ## Create Ranking table
-    indexTableItemId = module_settings.models.getSettingElseCreate("indexTableItemId",0,permission=3)
+    metrics = PrometheusMetrics(app)
+    metrics.info('app_info', 'Application info', version='1.0.3')
 
-    data['itemName'] = db.session.query(module_sales.models.Item).filter_by(id=indexTableItemId).first().name
-
-    Order = module_sales.models.Order
-    OrderItem = module_sales.models.OrderItem
-    orders = db.session.query(OrderItem,Order,func.sum(OrderItem.quantity).label('total_quantity')).filter_by(itemId=indexTableItemId).join(Order).group_by(Order.teamId).order_by(text('total_quantity DESC'))
-    #logger.debug(orders.statement.columns.keys())
-    #data['dev'] = orders.statement.columns.keys()
-    for row in orders.all():
-        data['teams'].append({
-            'team': teamsList[row[1].teamId],
-            'amount': row[2]
-        })
-        try:
-            print("dump")
-        except Exception as e:
-            logger.error('Failed to get Ranking: %s', repr(e))
+    app.config['SECRET_KEY'] = config['Flask']['SECRET_KEY']
+    socketio = SocketIO(app, cors_allowed_origins='*')
     
-    if(indexShowTable.lower() in ['true', '1', 'yes']):
-        data['indexShowTable'] = True
-
-    return jsonify(data)
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = config['Flask']['SQLALCHEMY_DATABASE_URI']
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    #app.config['DEBUG'] = True
 
 
-@socketio.on('ping')
-def handle_ping(data):
-    data["pong"] = datetime.datetime.now().timestamp()
-    emit('pong', data, broadcast=False)
+    with app.app_context():
+        import module_main as main
+        import module_sales as sales
+        import module_settings as settings
+        import module_teams as teams
+        import module_users as users
 
-@socketio.on('connect')
-def test_connect(auth):
-    emit('my_response', {'data': 'Connected'})
+        app.register_blueprint(main.blueprint, url_prefix="/")
+        app.register_blueprint(users.users.blueprint, url_prefix="/users")
+        app.register_blueprint(teams.blueprint, url_prefix="/teams")
+        app.register_blueprint(sales.blueprint, url_prefix="/sales")
+        app.register_blueprint(settings.blueprint, url_prefix="/settings")
 
-@socketio.on('disconnect')
-def test_disconnect():
-    print('Client disconnected')
+        db.init_app(app)
+        db.create_all()
+        users.users.init()
+        db.session.commit()
 
-# main driver function
+        # Migration for sqlalchemy
+        MIGRATION_DIR = os.path.join('data', 'migrations')  
+        migrate = Migrate(app, db, directory=MIGRATION_DIR)
+        socketio.init_app(app)
+    
+    return app
+
+
 if __name__ == '__main__':
-    app.run()
-
+    app = create_app(debug=True)
+    socketio.init_app(app)
+    socketio.run(app, port=5000, host='0.0.0.0')

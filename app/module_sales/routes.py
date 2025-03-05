@@ -3,14 +3,14 @@ from module_users.datahandler import User
 from module_users.users import getSessionUser
 from module_teams.models import Team
 
-from . import sales_Blueprint, logger
+from . import blueprint, logger
 from .models import db, Item, ItemGroup, Order, OrderItem
 
 
 def init():
     return True
 
-@sales_Blueprint.route('/', methods=['GET'])
+@blueprint.route('/', methods=['GET'])
 def overviewItems():
     if session.get('permission', 0) >= 1:
         itemGroups = db.session.query(ItemGroup).order_by(ItemGroup.name)
@@ -21,7 +21,7 @@ def overviewItems():
     else:
         return redirect(url_for('index'))
 
-@sales_Blueprint.route('/viewOrders', methods=['GET'])
+@blueprint.route('/viewOrders', methods=['GET'])
 def overviewOrders():
     if session.get('permission', 0) >= 1:
         #orders = db.session.query(Order)
@@ -32,7 +32,7 @@ def overviewOrders():
         return redirect(url_for('index'))
 
 
-@sales_Blueprint.route('/cashRegister', methods=['GET'])
+@blueprint.route('/cashRegister', methods=['GET'])
 def cashRegister():
     if session.get('permission', 0) >= 1:
     
@@ -43,7 +43,7 @@ def cashRegister():
         return redirect(url_for('index'))
 
 
-@sales_Blueprint.route('/updateItemGroup', methods=['GET','POST'])
+@blueprint.route('/updateItemGroup', methods=['GET','POST'])
 def updateItemGroup():
     if session.get('permission', 0) >= 2:
         if request.method == 'POST':
@@ -81,7 +81,7 @@ def updateItemGroup():
         return redirect(url_for('index'))
 
 
-@sales_Blueprint.route('/updateItem', methods=['GET','POST'])
+@blueprint.route('/updateItem', methods=['GET','POST'])
 def updateItem():
     if session.get('permission', 0) >= 2:
         if request.method == 'POST':
@@ -148,7 +148,7 @@ def updateItem():
         return redirect(url_for('index'))
 
 
-@sales_Blueprint.route('/getGroups', methods=['GET'])
+@blueprint.route('/getGroups', methods=['GET'])
 def getGroups():    
     if session.get('permission', 0) >= 0:
     
@@ -182,7 +182,7 @@ def getGroups():
     else:
         return None
 
-@sales_Blueprint.route('/createOrder', methods=['POST'])
+@blueprint.route('/createOrder', methods=['POST'])
 def createOrder():    
     if session.get('permission', 1) >= 0:
         data = request.json
@@ -217,7 +217,7 @@ def createOrder():
         return None
 
 
-@sales_Blueprint.route('/getOrders', methods=['GET'])
+@blueprint.route('/getOrders', methods=['GET'])
 def viewOrders():
     orders = db.session.query(Order,Team).join(Team)
     data = []
@@ -244,7 +244,7 @@ def viewOrders():
         
     return data
 
-@sales_Blueprint.route('/getItems', methods=['GET'])
+@blueprint.route('/getItems', methods=['GET'])
 def getItems():    
     if session.get('permission', 0) >= 0:
 

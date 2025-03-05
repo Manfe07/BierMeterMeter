@@ -49,6 +49,8 @@ function setConnectionState(state) {
 
 
 function ping() {
+    //console.debug('WsDataa: ', wsData);
+    //console.debug('WatchDog: ', watchDog);
     watchDog.ping_time = new Date().valueOf();
     socket.emit('ping', {
         data: {
@@ -64,10 +66,10 @@ socket.on('pong', function (msg, cb) {
     watchDog.pong_time = new Date().valueOf();
     wsData.latency = (watchDog.pong_time - watchDog.ping_time) / 2;
     wsData.timeDif = (watchDog.ping_time + wsData.latency) - (msg.pong * 1000);
-    console.debug({ "wsData_Latency": wsData });
+    //console.debug({ "wsData_Latency": wsData });
 });
 
 
 
 
-console.log("socket.js loaded");
+console.debug("socket.js loaded");

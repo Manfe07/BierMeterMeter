@@ -15,11 +15,13 @@
 {% endblock %}
 
 {% block script %}
-<script>
-    data = {}
-
+<script type="module">
+    import { socket, watchDog, wsData } from "/static/scripts/socket.js";
+    wsData.device = "enddevice";
+    watchDog.pingInterval = 5000;
+    
     function getData() {
-        fetch('{{ url_for("getData") }}', {
+        fetch('{{ url_for("main.getData") }}', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -29,19 +31,14 @@
         })
             .then((response) => response.json())
             .then((json) => {
-                data = json;
+                let data = json;
                 console.debug(data);
 
                 let tableRef = document.getElementById("rankingTable");
                 tableRef.innerHTML = "";
 
                 if(data.indexShowTable){
-                    for (team  in data.teams) {
-                        console.log(team);
-                        console.log(data.teams[team]);
-                        //let blankRow = tableRef.insertRow(-1);
-                        //let blankCell = blankRow.insertCell(0);
-                        //blankCell.innerHTML = ' ';
+                    for (let team  in data.teams) {
                         let newRow = tableRef.insertRow(-1);
                         let nameCell = newRow.insertCell(0);
                         let amountCell = newRow.insertCell(1);

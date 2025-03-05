@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, Flask, request, jsonify, redirect, url_for, session, flash
 
-from . import teams_Blueprint, logger
+from . import blueprint, logger
 from .models import db, Team, TeamGroup
 
-@teams_Blueprint.route('/', methods=['GET'])
+@blueprint.route('/', methods=['GET'])
 def overview():
     teams = Team.query.all()
     teamGroups = TeamGroup.query.all()
@@ -14,7 +14,7 @@ def overview():
     return render_template('teams/manageTeams.html', teams=teams, teamGroups=teamGroups)
 
 
-@teams_Blueprint.route('/deleteTeam', methods=['POST'])
+@blueprint.route('/deleteTeam', methods=['POST'])
 def deleteTeam():
     if request.method == 'POST':
         try:
@@ -30,7 +30,7 @@ def deleteTeam():
     else:
         return {'error': 0}
 
-@teams_Blueprint.route('/updateTeam', methods=['POST', 'GET'])
+@blueprint.route('/updateTeam', methods=['POST', 'GET'])
 def updateTeam():
     if session.get('permission', 0) >= 2:
         if request.method == 'POST':
@@ -71,7 +71,7 @@ def updateTeam():
     else:
         return redirect(url_for('index'))
 
-@teams_Blueprint.route('/updateTeamGroup', methods=['POST', 'GET'])
+@blueprint.route('/updateTeamGroup', methods=['POST', 'GET'])
 def updateTeamGroup():
     if session.get('permission', 0) >= 2:
         if request.method == 'POST':
@@ -110,7 +110,7 @@ def updateTeamGroup():
         return redirect(url_for('index'))
 
 
-@teams_Blueprint.route('/deleteTeamGroup', methods=['POST'])
+@blueprint.route('/deleteTeamGroup', methods=['POST'])
 def deleteTeamGroup():
     if request.method == 'POST':
         try:
@@ -128,7 +128,7 @@ def deleteTeamGroup():
 
 
 
-@teams_Blueprint.route('/getTeams', methods=['GET'])
+@blueprint.route('/getTeams', methods=['GET'])
 def getTeams():    
     if session.get('permission', 0) >= 1:
 
@@ -149,7 +149,7 @@ def getTeams():
     else:
         return None
 
-@teams_Blueprint.route('/getGroups', methods=['GET'])
+@blueprint.route('/getGroups', methods=['GET'])
 def getGroups():    
     if session.get('permission', 0) >= 0:
     

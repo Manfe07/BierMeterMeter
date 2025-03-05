@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, Flask, request, jsonify, redirect,
 import module_users.datahandler as datahandler
 
 
-users_Blueprint = Blueprint('users', __name__,  template_folder='templates')
+blueprint = Blueprint('users', __name__,  template_folder='templates')
 
 # 1: Kellner
 # 2: Verwaltung
@@ -19,11 +19,11 @@ def getSessionUser():
     }
     return user
 
-@users_Blueprint.route('/login', methods=['POST', 'GET'])
+@blueprint.route('/login', methods=['POST', 'GET'])
 def login():
     sessionUser = getSessionUser()
     if sessionUser["permission"] > 0:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     else: 
         if request.method == 'POST':
@@ -37,7 +37,7 @@ def login():
                 session['permission'] = permission
                 session['user_name'] = userName
                 session['user_id'] = user.id
-                return redirect(url_for('index'))
+                return redirect(url_for('main.index'))
 
             else:
                 flash('wrong password!')
@@ -51,16 +51,16 @@ def login():
 
 
 
-@users_Blueprint.route('/logout')
+@blueprint.route('/logout')
 def logout():
     session['logged_in'] = False
     session['permission'] = 0
     session['user_name'] = None
     session['user_id'] = None
-    return redirect(url_for('index'))
+    return redirect(url_for('main.index'))
 
 
-@users_Blueprint.route('/addUser', methods=['POST','GET'])
+@blueprint.route('/addUser', methods=['POST','GET'])
 def add_user():
     sessionUser = getSessionUser()
     if sessionUser.get("permission") >= 3:
@@ -79,18 +79,18 @@ def add_user():
         elif request.method == 'GET':
             return redirect(url_for('users.manageUsers'))
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
 
-@users_Blueprint.route('/', methods=['GET'])
+@blueprint.route('/', methods=['GET'])
 def manageUsers():
     sessionUser = getSessionUser()
     if sessionUser.get("permission") >= 3:
         return render_template('users/manageUsers.html',users = datahandler.getUsers())
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
-@users_Blueprint.route('/deleteUser', methods=['POST'])
+@blueprint.route('/deleteUser', methods=['POST'])
 def deleteUser():
     sessionUser = getSessionUser()
     if sessionUser.get("permission") >= 3:
