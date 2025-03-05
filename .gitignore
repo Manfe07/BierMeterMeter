@@ -12,3 +12,4 @@ docker-compose.yml
 *.db
 logs/
 test.ipynb
+.vscode/launch.json
