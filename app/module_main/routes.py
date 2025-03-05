@@ -21,7 +21,6 @@ def getData():
         'indexShowTable': False,
         'teams':[]
     }
-    #
     indexShowTable = module_settings.models.getSettingElseCreate("indexShowTable",True,permission=2)
     
 
@@ -52,8 +51,11 @@ def getData():
         except Exception as e:
             logger.error('Failed to get Ranking: %s', repr(e))
     
+    # Parse Setting to show Ranking Table
     if(indexShowTable.lower() in ['true', '1', 'yes']):
         data['indexShowTable'] = True
+    else:
+        data['indexShowTable'] = False
 
     return jsonify(data)
 

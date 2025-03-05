@@ -5,13 +5,20 @@ from module_teams.models import Team
 
 from . import blueprint, logger
 from .models import db, Setting
+from database import socketio
 
 
 @blueprint.route('/', methods=['GET'])
 def overviewSettings():
     if session.get('permission', 0) >= 3:
-        settings = Setting.query.all()
+        try:
+            settings = Setting.query.all()
+        except Exception as e:
+            print(e)
         return render_template('settings/overviewSettings.html', settings=settings)
+    else:
+        return redirect(url_for('users.login'))
+
 
 @blueprint.route('/updateSetting', methods=['POST','GET'])
 def updateSetting():
@@ -36,6 +43,7 @@ def updateSetting():
                     'value' : setting.value,
                     'permission' : setting.permission,
                 }
+            emit('newData', broadcast=True)
     logger.debug(response)
     return redirect(url_for('settings.overviewSettings'))
         

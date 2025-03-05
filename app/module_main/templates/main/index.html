@@ -7,6 +7,7 @@
             <h1>Ranking</h1>
         </div>
         <div class='card-body'>
+            <img id="secret-Banner" style="width: 80%;" ><br>
             <table id="rankingTable">
             </table>            
         </div>
@@ -38,6 +39,9 @@
                 tableRef.innerHTML = "";
 
                 if(data.indexShowTable){
+                    $('#secret-Banner').css('visibility', 'collapse');
+                    $('#secret-Banner').attr("src","");
+
                     for (let team  in data.teams) {
                         let newRow = tableRef.insertRow(-1);
                         let nameCell = newRow.insertCell(0);
@@ -54,7 +58,9 @@
                     }
                 }
                 else{
-                    tableRef.innerHTML = "<h2>Geheim</h2>";
+                    $('#secret-Banner').css('visibility', 'visible');
+                    $('#secret-Banner').attr("src","/static/main/top-secret.png");
+                    tableRef.innerHTML = "";
                     console.debug(false);
                 }
             });
