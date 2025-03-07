@@ -4,8 +4,9 @@ static/output
 output
 /config
 .vscode/settings.json
-logs/app.log
-logs/log.txt
+logs/
+logs/
+data/
 docker-compose.yml
 .env/
 .venv/
