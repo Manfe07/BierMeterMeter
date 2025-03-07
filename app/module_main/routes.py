@@ -46,10 +46,6 @@ def getData():
             'team': teamsList[row[1].teamId],
             'amount': row[2]
         })
-        try:
-            print("dump")
-        except Exception as e:
-            logger.error('Failed to get Ranking: %s', repr(e))
     
     # Parse Setting to show Ranking Table
     if(indexShowTable.lower() in ['true', '1', 'yes']):

@@ -6,6 +6,10 @@ from module_teams.models import Team
 from . import blueprint, logger
 from .models import db, Item, ItemGroup, Order, OrderItem
 
+from database import socketio
+from flask_socketio import emit
+
+
 
 def init():
     return True
@@ -210,6 +214,8 @@ def createOrder():
             )
             db.session.add(orderItem)
         db.session.commit()
+        emit('newData', broadcast=True, namespace='/')
+
         
 
         return {'success': True }

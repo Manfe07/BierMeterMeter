@@ -3,7 +3,6 @@ from flask import Flask, send_file, render_template, redirect, jsonify
 from prometheus_flask_exporter import PrometheusMetrics
 from flask_socketio import SocketIO, send, emit
 from flask_migrate import Migrate
-#from tools import * 
 
 
 from database import db, socketio
@@ -28,10 +27,9 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 
-def create_app(debug=False):
+def create_app():
     """Create an application."""
     app = Flask(__name__)
-    app.debug = debug
     
 
 
@@ -43,7 +41,7 @@ def create_app(debug=False):
     
     app.config['SQLALCHEMY_DATABASE_URI'] = config['Flask']['SQLALCHEMY_DATABASE_URI']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    #app.config['DEBUG'] = True
+    app.config['DEBUG'] = config['Flask']['DEBUG']
 
 
     with app.app_context():
@@ -72,7 +70,8 @@ def create_app(debug=False):
     return app
 
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app(debug=True)
     socketio.init_app(app)
     socketio.run(app, port=5000, host='0.0.0.0')

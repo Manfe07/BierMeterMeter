@@ -2,12 +2,19 @@
 {% block content%}
 
 <div class='container'>
-    <div class='card'>
+    <div class='card' id="secretCard" style="visibility: collapse;">
         <div class='card-header'>
             <h1>Ranking</h1>
         </div>
         <div class='card-body'>
-            <img id="secret-Banner" style="width: 80%;" ><br>
+            <img id="secret-Banner" style="width: 80%;" src="/static/main/top-secret.png" ><br>
+        </div>
+    </div>
+    <div class='card' id="rankingCard">
+        <div class='card-header'>
+            <h1>Ranking</h1>
+        </div>
+        <div class='card-body'>
             <table id="rankingTable">
             </table>            
         </div>
@@ -39,8 +46,9 @@
                 tableRef.innerHTML = "";
 
                 if(data.indexShowTable){
-                    $('#secret-Banner').css('visibility', 'collapse');
-                    $('#secret-Banner').attr("src","");
+                    $('#secretCard').css('visibility', 'collapse');
+                    $('#secretCard').height('0px');
+                    $('#rankingCard').css('visibility', 'visible');
 
                     for (let team  in data.teams) {
                         let newRow = tableRef.insertRow(-1);
@@ -58,8 +66,9 @@
                     }
                 }
                 else{
-                    $('#secret-Banner').css('visibility', 'visible');
-                    $('#secret-Banner').attr("src","/static/main/top-secret.png");
+                    $('#secretCard').css('visibility', 'visible');
+                    $('#secretCard').height('auto');
+                    $('#rankingCard').css('visibility', 'collapse');
                     tableRef.innerHTML = "";
                     console.debug(false);
                 }
@@ -67,6 +76,8 @@
     }
 
     getData();
+    socket.on('newData',getData);
+
 </script>
 
 {% endblock %}

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, Flask, request, jsonify, redirect,
 from module_users.datahandler import User
 from module_users.users import getSessionUser
 from module_teams.models import Team
+from flask_socketio import emit
 
 from . import blueprint, logger
 from .models import db, Setting
@@ -43,7 +44,7 @@ def updateSetting():
                     'value' : setting.value,
                     'permission' : setting.permission,
                 }
-            emit('newData', broadcast=True)
+            emit('newData', broadcast=True, namespace='/')
     logger.debug(response)
     return redirect(url_for('settings.overviewSettings'))
         
