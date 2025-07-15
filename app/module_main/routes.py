@@ -22,7 +22,7 @@ def getData():
         'teams':[]
     }
     indexShowTable = module_settings.models.getSettingElseCreate("indexShowTable",True,permission=2)
-    
+    tableShowOnlyToday = module_settings.models.getSettingElseCreate("tableShowOnlyToday",True,permission=2)
 
     # Get Teams as list, get add names in ranking
     Team = module_teams.models.Team
