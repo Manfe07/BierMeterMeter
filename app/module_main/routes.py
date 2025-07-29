@@ -19,10 +19,9 @@ def index():
 def getData():
     data = {
         'indexShowTable': False,
-        'teams':[]
+        'days':[]
     }
     indexShowTable = module_settings.models.getSettingElseCreate("indexShowTable",True,permission=2)
-    tableShowOnlyToday = module_settings.models.getSettingElseCreate("tableShowOnlyToday",True,permission=2)
 
     # Get Teams as list, get add names in ranking
     Team = module_teams.models.Team
@@ -31,21 +30,58 @@ def getData():
     for team in teams:
         teamsList[team.id] = team.name
 
-    ## Create Ranking table
+    # Create Ranking table
     indexTableItemId = module_settings.models.getSettingElseCreate("indexTableItemId",1,permission=3)
+    tableShowOnlyToday = module_settings.models.getSettingElseCreate("tableShowOnlyToday",True,permission=2)
 
-    data['itemName'] = db.session.query(module_sales.models.Item).filter_by(id=indexTableItemId).first().name
-
+    Item = module_sales.models.Item
     Order = module_sales.models.Order
     OrderItem = module_sales.models.OrderItem
-    orders = db.session.query(OrderItem,Order,func.sum(OrderItem.quantity).label('total_quantity')).filter_by(itemId=indexTableItemId).join(Order).group_by(Order.teamId).order_by(text('total_quantity DESC'))
-    #logger.debug(orders.statement.columns.keys())
-    #data['dev'] = orders.statement.columns.keys()
+
+    ## ToDo: from datetime import timedelta
+    orders = []
+    data['itemName'] = db.session.query(Item).filter_by(id=indexTableItemId).first().name
+    if tableShowOnlyToday == "True":
+        orders = db.session.query(OrderItem,Order,func.sum(OrderItem.quantity).label('total_quantity'))\
+            .filter(OrderItem.itemId==indexTableItemId)\
+            .join(Order)\
+            .filter(func.date(Order.created_at) == datetime.date.today())\
+            .group_by(
+                Order.teamId,
+                func.date(Order.created_at)
+                )\
+            .order_by(
+                func.date(Order.created_at),
+                text('total_quantity DESC')
+            )
+            
+    else:
+        orders = db.session.query(OrderItem,Order,func.sum(OrderItem.quantity).label('total_quantity'))\
+            .filter(OrderItem.itemId==indexTableItemId)\
+            .join(Order)\
+            .group_by(
+                Order.teamId,
+                func.date(Order.created_at)
+                )\
+            .order_by(
+                func.date(Order.created_at),
+                text('total_quantity DESC')
+            )
+    logger.debug(orders.all())
+    days = {}
     for row in orders.all():
-        data['teams'].append({
+        entry = {
             'team': teamsList[row[1].teamId],
-            'amount': row[2]
-        })
+            'amount': row[2],
+            'date' : row[1].created_at.strftime("%d.%m.%Y"),
+        }
+        if days.get(entry["date"]):
+            days[entry["date"]].append(entry)
+        else:
+            days[entry["date"]] = []
+            days[entry["date"]].append(entry)
+    data['days'] = days
+    logger.debug(days)
     
     # Parse Setting to show Ranking Table
     if(indexShowTable.lower() in ['true', '1', 'yes']):
