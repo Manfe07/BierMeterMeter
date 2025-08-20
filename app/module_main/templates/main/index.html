@@ -41,7 +41,6 @@
             .then((json) => {
                 let data = json;
                 console.debug(data);
-
                 let tableRef = document.getElementById("rankingTable");
                 tableRef.innerHTML = "";
 
@@ -49,20 +48,33 @@
                     $('#secretCard').css('visibility', 'collapse');
                     $('#secretCard').height('0px');
                     $('#rankingCard').css('visibility', 'visible');
-
-                    for (let team  in data.teams) {
+                    for (let day in data.days){
+                        //Day header
                         let newRow = tableRef.insertRow(-1);
                         let nameCell = newRow.insertCell(0);
-                        let amountCell = newRow.insertCell(1);
-                        let bierCell = newRow.insertCell(2);
-                        nameCell.setAttribute('class', 'rankingColumnTeam');
-                        amountCell.setAttribute('class', 'rankingColumnAmount');
-                        bierCell.setAttribute('class', 'rankingColumnBier');
-                        nameCell.innerHTML = "<strong>" + data.teams[team].team + "</strong>";                        
-                        amountCell.innerHTML = data.teams[team].amount;                    
-                        for(let i = 1; i <= data.teams[team].amount; i++){
-                            bierCell.innerHTML += "🍺";
+                        nameCell.setAttribute('class', 'rankingColumnDay');
+                        nameCell.setAttribute('colspan', "3");
+                        nameCell.innerHTML = day;
+
+                        for (let team  in data.days[day]) {
+                            console.debug(team)
+                            let newRow = tableRef.insertRow(-1);
+                            let nameCell = newRow.insertCell(0);
+                            let amountCell = newRow.insertCell(1);
+                            let bierCell = newRow.insertCell(2);
+                            nameCell.setAttribute('class', 'rankingColumnTeam');
+                            amountCell.setAttribute('class', 'rankingColumnAmount');
+                            bierCell.setAttribute('class', 'rankingColumnBier');
+                            nameCell.innerHTML = "<strong>" + data.days[day][team].team + "</strong>";                        
+                            amountCell.innerHTML = data.days[day][team].amount;                    
+                            for(let i = 1; i <= data.days[day][team].amount; i++){
+                                bierCell.innerHTML += "🍺";
+                            }
                         }
+                        newRow = tableRef.insertRow(-1);
+                        nameCell = newRow.insertCell(0);
+                        nameCell.setAttribute('class', 'rankingColumnSpacer');
+                        nameCell.setAttribute('colspan', "3");
                     }
                 }
                 else{
@@ -84,5 +96,16 @@
 
 {% block style %}
 <style>
+    .rankingColumnDay{
+        text-decoration: underline;
+        font-weight: bold;
+        font-size: larger;
+        margin-left: 20px;
+        margin-bottom: 30px;
+    }
+
+    .rankingColumnSpacer{
+        height: 50px;
+    }
 </style>
 {% endblock %}
