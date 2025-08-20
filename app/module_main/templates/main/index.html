@@ -53,7 +53,7 @@
                         let newRow = tableRef.insertRow(-1);
                         let nameCell = newRow.insertCell(0);
                         nameCell.setAttribute('class', 'rankingColumnDay');
-                        nameCell.setAttribute('colSpan', "3")
+                        nameCell.setAttribute('colspan', "3")
                         nameCell.innerHTML = day;   
 
                         for (let team  in data.days[day]) {
