@@ -44,6 +44,7 @@ class Order(db.Model):
                           server_default=func.now())
   items = db.Relationship('OrderItem', backref='orderItem', order_by='orderItem.columns.id.asc()')
   itemCount = db.Column(db.Integer, nullable=False)
+  paymentType = db.Column(db.Integer, nullable=False, default=0)  # 0: account ; 1: cash;
 
   # Relationships
   team = db.relationship("Team")
