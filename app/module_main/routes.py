@@ -19,7 +19,7 @@ def index():
 def getData():
     data = {
         'indexShowTable': False,
-        'days':[]
+        'days':{}
     }
     indexShowTable = module_settings.models.getSettingElseCreate("indexShowTable",True,permission=2)
 
