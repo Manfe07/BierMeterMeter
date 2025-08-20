@@ -65,7 +65,7 @@
                             nameCell.setAttribute('class', 'rankingColumnTeam');
                             amountCell.setAttribute('class', 'rankingColumnAmount');
                             bierCell.setAttribute('class', 'rankingColumnBier');
-                            nameCell.innerHTML = data.days[day][team].team;                        
+                            nameCell.innerHTML = "<strong>" + data.days[day][team].team + "</strong>";                        
                             amountCell.innerHTML = data.days[day][team].amount;                    
                             for(let i = 1; i <= data.days[day][team].amount; i++){
                                 bierCell.innerHTML += "🍺";
