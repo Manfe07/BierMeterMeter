@@ -19,7 +19,7 @@ def index():
 def getData():
     data = {
         'indexShowTable': False,
-        'days':{}
+        'days':[]
     }
     indexShowTable = module_settings.models.getSettingElseCreate("indexShowTable",True,permission=2)
 
@@ -40,7 +40,7 @@ def getData():
 
     orders = []
     data['itemName'] = db.session.query(Item).filter_by(id=indexTableItemId).first().name
-    if parse_bool(tableShowOnlyToday):
+    if str(tableShowOnlyToday).lower() in ['true', '1', 'yes']:
         orders = db.session.query(OrderItem,Order,func.sum(OrderItem.quantity).label('total_quantity'))\
             .filter(OrderItem.itemId==indexTableItemId)\
             .join(Order)\
@@ -68,17 +68,16 @@ def getData():
             )
     logger.debug(orders.all())
     days = {}
+
     for row in orders.all():
         entry = {
             'team': teamsList[row[1].teamId],
             'amount': row[2],
             'date' : row[1].created_at.strftime("%d.%m.%Y"),
         }
-        if days.get(entry["date"]):
-            days[entry["date"]].append(entry)
-        else:
-            days[entry["date"]] = []
         days.setdefault(entry["date"], []).append(entry)
+
+
     data['days'] = days
     logger.debug(days)
     
