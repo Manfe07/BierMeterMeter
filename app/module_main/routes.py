@@ -38,7 +38,6 @@ def getData():
     Order = module_sales.models.Order
     OrderItem = module_sales.models.OrderItem
 
-    ## ToDo: from datetime import timedelta
     orders = []
     data['itemName'] = db.session.query(Item).filter_by(id=indexTableItemId).first().name
     if str(tableShowOnlyToday).lower() in ['true', '1', 'yes']:
