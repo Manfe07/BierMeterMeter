@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}Team Abrechnung 🛒🍺{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Team Abrechnung</h1>
+
+    {% if teams %}
+        {% for team in teams %}
+        <div class='card-body'>
+            <div class='container'>
+                <div id="billDiv" class="bill">
+                    <table id="bill">
+                        <tr>
+                            <td class="billColumnTeam" colspan="3" style="font-size: 20px;"><b>{{ team }}</b></td>
+                        </tr>
+                        {% set ns = namespace(sum=0) %}
+                        {% for group in teams[team] %}
+                            <td class="billColumnName" colspan="2">- {{ group }} -</td>
+                            {% for item in teams[team][group] %}
+                                <tr>
+                                    <td class="billColumnAmount">{{ item.itemQuantity }}&nbsp;</td>
+                                    <td class="billColumnName">{{ item.itemName }}&nbsp;</td>
+                                    <td class="billColumnSum">{{"%.2f €"|format(item.itemTotalPrice) }} </td>
+                                    {% set ns.sum = ns.sum + item.itemTotalPrice %}
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                        <tr>
+                            <td class="billColumnAmount"></td>
+                            <td class="billColumnName"></td>
+                            <td class="billColumnSum"><b>-------</b></td>
+                        </tr>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td></td>
+                            <td><b>{{ "%.2f €"|format(ns.sum)  }}</b></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            Keine Teams gefunden.
+        </div>
+    {% endif %}
+</div>
+<style>
+
+    @font-face {
+        font-family: 'FakeReceipt';
+        src: url("/static/fonts/fake receipt.otf") format("opentype");
+    }
+
+    .bill {
+        font-family: 'FakeReceipt';
+        background-color: white;
+        border: solid 1px;
+        padding: 10px;
+        margin-top: 10px;
+        width: fit-content;
+        color: rgba(0, 0, 0, 0.7);
+    }
+
+    .billColumnTeam {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        text-align: center;
+    }
+
+    .billColumnAmount {
+        text-align: right;
+    }
+
+    .billColumnTotal {
+        text-align: right;
+    }
+
+    .billColumnSum {
+        text-align: right;
+    }
+</style>
+{% endblock %}
+

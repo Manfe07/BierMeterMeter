@@ -8,6 +8,7 @@ from .models import db, Item, ItemGroup, Order, OrderItem
 
 from database import socketio
 from flask_socketio import emit
+from sqlalchemy import func
 
 
 
@@ -197,7 +198,8 @@ def createOrder():
             teamId = data['team_id'],
             cashierId = session['user_id'],
             sum = data['sum'],
-            itemCount = data['itemCount']
+            itemCount = data['itemCount'],
+            paymentType = data['paymentType']
         )
 
         db.session.add(order)
@@ -275,3 +277,57 @@ def getItems():
 
 
 
+
+@blueprint.route('/teamBilling', methods=['GET'])
+def teamBilling():
+    if session.get('permission', 0) >= 2:
+
+
+
+        # Query to get all orderItems grouped by Team and Item and sum the Quantity and price
+        team_items_summary = db.session.query(
+            Team.name.label('team_name'),
+            Item.name.label('item_name'),
+            ItemGroup.name.label('item_group_name'),
+            func.sum(OrderItem.quantity).label('total_quantity'),
+            func.sum(OrderItem.sum).label('total_amount'),
+            Order
+        ).where(
+            Order.paymentType == '0'  # Only account payments
+        ).join(
+            Order, OrderItem.orderId == Order.id
+        ).join(
+            Team, Order.teamId == Team.id
+        ).join(
+            Item, OrderItem.itemId == Item.id
+        ).join(
+            ItemGroup, Item.groupId == ItemGroup.id
+        ).group_by(
+            Team.id, Item.id
+        ).order_by(
+            Team.name, Item.name
+        ).all()
+
+        dataBuffer = {}
+        for row in team_items_summary:
+            entry = {
+                'itemName': row[1],
+                'itemQuantity': row[3],
+                'itemTotalPrice': row[4],
+                'itemGroup': row[2]
+            }
+            dataBuffer.setdefault(row[0], []).append(entry)
+        
+        data = {}
+        for team in dataBuffer:
+            data[team] = {}
+            for item in dataBuffer[team]:
+                data[team].setdefault(item['itemGroup'], []).append({
+                    'itemName': item['itemName'],
+                    'itemQuantity': item['itemQuantity'],
+                    'itemTotalPrice': item['itemTotalPrice']
+                })
+
+        return render_template('sales/teamBilling.html', teams=data)
+    else:
+        return redirect(url_for('index'))

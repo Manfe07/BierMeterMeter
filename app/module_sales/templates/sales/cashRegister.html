@@ -11,7 +11,7 @@
     <source src="/static/sounds/click.mp3" />
 </audio>
 
-<div class='card' id="teamSelectDiv" style="visibility:visible;">
+<div class='card' id="teamSelectDiv" style="display:flex;">
     <div class='card-header'>
         <h1 id="teamSelectTitel">Team wählen</h1>
     </div>
@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<div class='card' id="itemSelectDiv" style="visibility:hidden;">
+<div class='card' id="itemSelectDiv" style="display:none;">
     <div class='card-header'>
         <h1 id="itemSelectTitel">🛒Team Name🛒</h1>
     </div>
@@ -58,11 +58,11 @@
             <div id="billDiv" class="bill">
                 <table id="bill"></table>
             </div>
-            <div style="margin: 20px; visibility: collapse" id="check-out">
+            <div style="margin: 20px; display: none" id="check-out">
                 <button type="button" class="btn btn-danger"
-                    onclick="submitBill('account')"><b>Team-Konto<br>TEAMNAME</b></button>
+                    onclick="submitBill('0')"><b>Team-Konto<br>TEAMNAME</b></button>
                 <button type="button" class="btn btn-warning"
-                    onclick="submitBill('cash')"><b>Bar<br>EC</b></button><br><br>
+                    onclick="submitBill('1')"><b>Bar<br>EC</b></button><br><br>
                 <button type="button" class="btn btn-secondary"
                     onclick="resetRegister()"><b>Bestellung<br>Abbrechen</b></button>
             </div>
@@ -154,10 +154,10 @@
     resetRegister();
 
     function resetRegister() {
-        $("#teamSelectDiv").css('visibility', 'visible');
-        $("#itemSelectDiv").css('visibility', 'collapse');
-        $("#check-out").css('visibility', 'collapse');
-        $("#billDiv").css('visibility', 'collapse');
+        $("#teamSelectDiv").css('display', 'flex');
+        $("#itemSelectDiv").css('display', 'none');
+        $("#check-out").css('display', 'none');
+        $("#billDiv").css('display', 'none');
         orderData = {
             team: NaN,
             basket: {},
@@ -254,9 +254,9 @@
     function showItems() {
         clearBill();
         $('#itemSelectTitel').text("🛒" + orderData.team.name + "🛒");
-        $("#itemSelectDiv").css('visibility', 'visible');
-        $("#teamSelectDiv").css('visibility', 'collapse');
-        $("#billDiv").css('visibility', 'visible');
+        $("#itemSelectDiv").css('display', 'flex');
+        $("#teamSelectDiv").css('display', 'none');
+        $("#billDiv").css('display', 'flex');
 
     }
 
@@ -343,7 +343,7 @@
         amountCell.innerHTML = "";
         sumCell.innerHTML = "<b>" + total.toFixed(2) + "€</b>";
 
-        document.getElementById("check-out").style.visibility = "visible";
+        document.getElementById("check-out").style.display = "flex";
     }
 
 
@@ -409,7 +409,7 @@
         amountCell.innerHTML = "";
         sumCell.innerHTML = "<b>" + total.toFixed(2) + "€</b>";
 
-        document.getElementById("check-out").style.visibility = "visible";
+        document.getElementById("check-out").style.display = "flex";
         orderData.sum = total.toFixed(2);
     }
 
